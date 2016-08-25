@@ -1,0 +1,47 @@
+# http://editorconfig.org
+#
+# This file can be located either in the user home directory `~/.editorconfig`,
+# or in inside the vim configuration directory `~/.vim/.editorconfig`.
+# Copy me to one of the two directory above.
+# by pax (coolwinding@gmail.com) 160822, updated 160825
+
+root = true
+
+[*]
+charset = utf-8
+indent_style = space
+indent_size = 4
+tab_width = 4
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+max_line_length = off
+
+[*.md]
+insert_final_newline = false
+trim_trailing_whitespace = false
+
+[package.json,bower.json,*config.json]
+indent_style = space
+indent_size = 2
+
+[*.{js,json}]
+;path=~/.vim/bundle/vim-jsbeautify/plugin/lib/js/bin/js-beautify.js
+indent_style = space
+indent_size = 4
+
+[*.css]
+;path=~/.vim/bundle/vim-jsbeautify/plugin/lib/js/bin/css-beautify.js
+indent_style = space
+indent_size = 2
+
+[*.html]
+;path=~/.vim/bundle/vim-jsbeautify/plugin/lib/js/bin/html-beautify.js
+;vim:max_char=78:brace_style=expand
+indent_style = space
+indent_size = 2
+
+[{*.mk,Makefile,makefile,MAKEFILE,*.bb}]
+indent_style = tab
+indent_size = 4
+
