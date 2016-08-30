@@ -7,8 +7,12 @@
     // - Some libs do not have runable min-version or normal-version, then here just use runable version.
     var paths = {
         css: {
-            lib: [],
-            libMin: [],
+            lib: [
+                'lib/angular-loading-bar/build/loading-bar.css'
+            ],
+            libMin: [
+                'lib/angular-loading-bar/build/loading-bar.min.css'
+            ],
             core: [
                 'css/ionic.app.css'
             ],
@@ -16,10 +20,12 @@
         },
         js: {
             lib: [
-                'lib/ionic/js/ionic.bundle.js'
+                'lib/ionic/js/ionic.bundle.js',
+                'lib/angular-loading-bar/build/loading-bar.js'
             ],
             libMin: [
-                'lib/ionic/js/ionic.bundle.min.js'
+                'lib/ionic/js/ionic.bundle.min.js',
+                'lib/angular-loading-bar/build/loading-bar.min.js'
             ],
             core: [
                 'js/app.js',
