@@ -136,5 +136,5 @@ gulp.task('watch', function() {
 });
 
 //== default task ==//
-gulp.task('default', ['sass']);
+gulp.task('default', ['lint', 'test']);
 
