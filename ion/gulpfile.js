@@ -8,10 +8,6 @@ var rename = require('gulp-rename');
 var sh = require('shelljs');
 var shell = require('gulp-shell');
 
-var paths = {
-    sass: ['./scss/**/*.scss']
-};
-
 //== install js lib ==//
 gulp.task('install', ['git-check'], function() {
     return bower.commands.install()
@@ -62,7 +58,7 @@ gulp.task('jsdoc', shell.task([
 
 //== watch file change ==//
 gulp.task('watch', function() {
-    gulp.watch(paths.sass, ['sass']);
+    gulp.watch('./scss/**/*.scss', ['sass']);
 });
 
 //== default task ==//
