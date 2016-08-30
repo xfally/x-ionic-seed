@@ -8,10 +8,12 @@
     var paths = {
         css: {
             lib: [
-                'lib/angular-loading-bar/build/loading-bar.css'
+                'lib/angular-loading-bar/build/loading-bar.css',
+                'lib/angular-toastr/dist/angular-toastr.css'
             ],
             libMin: [
-                'lib/angular-loading-bar/build/loading-bar.min.css'
+                'lib/angular-loading-bar/build/loading-bar.min.css',
+                'lib/angular-toastr/dist/angular-toastr.min.css'
             ],
             core: [
                 'css/ionic.app.css'
@@ -24,14 +26,16 @@
                 'lib/angular-loading-bar/build/loading-bar.js',
                 'lib/angular-local-storage/dist/angular-local-storage.js',
                 'lib/angular-messages/angular-messages.js',
-                'lib/angular-mocks/angular-mocks.js'
+                'lib/angular-mocks/angular-mocks.js',
+                'lib/angular-toastr/dist/angular-toastr.tpls.js'
             ],
             libMin: [
                 'lib/ionic/js/ionic.bundle.min.js',
                 'lib/angular-loading-bar/build/loading-bar.min.js',
                 'lib/angular-local-storage/dist/angular-local-storage.min.js',
                 'lib/angular-messages/angular-messages.min.js',
-                'lib/angular-mocks/angular-mocks.js'
+                'lib/angular-mocks/angular-mocks.js',
+                'lib/angular-toastr/dist/angular-toastr.tpls.min.js'
             ],
             core: [
                 'js/app.js',
