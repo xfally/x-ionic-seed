@@ -7,6 +7,7 @@ var minifyCss = require('gulp-minify-css');
 var rename = require('gulp-rename');
 var sh = require('shelljs');
 var shell = require('gulp-shell');
+var jshint = require('gulp-jshint');
 var os = require('os');
 var Server = require('karma').Server;
 
@@ -67,6 +68,13 @@ gulp.task('sass', function(done) {
         }))
         .pipe(gulp.dest('./www/css/'))
         .on('end', done);
+});
+
+//== jshint ==//
+gulp.task('lint', function() {
+    return gulp.src(paths.js.core.concat(paths.js.mod))
+        .pipe(jshint())
+        .pipe(jshint.reporter('jshint-stylish'));
 });
 
 //== karma unit testing ==//
