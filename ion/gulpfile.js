@@ -7,6 +7,30 @@ var minifyCss = require('gulp-minify-css');
 var rename = require('gulp-rename');
 var sh = require('shelljs');
 var shell = require('gulp-shell');
+var os = require('os');
+var Server = require('karma').Server;
+
+// 'darwin', 'freebsd', 'linux', 'sunos' or 'win32'
+var platform = os.platform();
+
+var paths = require('./www/js/xpath.js').path4Test;
+
+//== utils ==//
+var _extend = function(oa, ob) {
+    // loop through ob
+    for (var i in ob) {
+        // check if the extended ob has that property
+        if (ob.hasOwnProperty(i)) {
+            // now check if oa's child is also object so we go through it recursively
+            if (typeof oa[i] == "object" && oa.hasOwnProperty(i) && oa[i] != null) {
+                oa[i] = _extend(oa[i], ob[i]);
+            } else {
+                oa[i] = ob[i];
+            }
+        }
+    }
+    return oa;
+};
 
 //== install js lib ==//
 gulp.task('install', ['git-check'], function() {
@@ -43,6 +67,48 @@ gulp.task('sass', function(done) {
         }))
         .pipe(gulp.dest('./www/css/'))
         .on('end', done);
+});
+
+//== karma unit testing ==//
+var karmaConfig = {
+    configFile: __dirname + '/karma.conf.js',
+    basePath: './',
+    files: paths.js.lib.concat(paths.js.core, paths.js.mod, paths.js.test),
+    port: 9876
+};
+
+// Run test once and exit.
+gulp.task('test', function(done) {
+    if (platform === 'darwin') {
+        new Server(_extend(karmaConfig, {
+            browsers: ['Safari'],
+            singleRun: true
+        }), function() {
+            done();
+        }).start();
+    } else {
+        new Server(_extend(karmaConfig, {
+            browsers: ['Chromium'],
+            singleRun: true
+        }), function() {
+            done();
+        }).start();
+    }
+});
+
+// Watch (Detecting) for file changes and re-run Tests on each change during Development.
+gulp.task('tdd', function(done) {
+    if (platform === 'darwin') {
+        new Server(_extend(karmaConfig, {
+            browsers: ['Safari'],
+            singleRun: false
+        }), done).start();
+    } else {
+        new Server(_extend(karmaConfig, {
+            browsers: ['Chromium'],
+            singleRun: false
+        }), done).start();
+    }
 });
 
 //== generate jsdoc ==//
