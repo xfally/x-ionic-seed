@@ -23,13 +23,15 @@
                 'lib/ionic/js/ionic.bundle.js',
                 'lib/angular-loading-bar/build/loading-bar.js',
                 'lib/angular-local-storage/dist/angular-local-storage.js',
-                'lib/angular-messages/angular-messages.js'
+                'lib/angular-messages/angular-messages.js',
+                'lib/angular-mocks/angular-mocks.js'
             ],
             libMin: [
                 'lib/ionic/js/ionic.bundle.min.js',
                 'lib/angular-loading-bar/build/loading-bar.min.js',
                 'lib/angular-local-storage/dist/angular-local-storage.min.js',
-                'lib/angular-messages/angular-messages.min.js'
+                'lib/angular-messages/angular-messages.min.js',
+                'lib/angular-mocks/angular-mocks.js'
             ],
             core: [
                 'js/app.js',
