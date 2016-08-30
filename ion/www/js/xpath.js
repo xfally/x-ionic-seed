@@ -15,9 +15,15 @@
             mod: []
         },
         js: {
-            lib: [],
-            libMin: [],
-            core: [],
+            lib: [
+                'lib/ionic/js/ionic.bundle.js'
+            ],
+            libMin: [
+                'lib/ionic/js/ionic.bundle.min.js'
+            ],
+            core: [
+                'js/app.js'
+            ],
             mod: [],
             test: []
         }
