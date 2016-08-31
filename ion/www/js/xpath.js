@@ -29,7 +29,8 @@
                 'lib/angular-mocks/angular-mocks.js',
                 'lib/angular-toastr/dist/angular-toastr.tpls.js',
                 'lib/angular-translate/angular-translate.js',
-                'lib/angular-translate-loader-partial/angular-translate-loader-partial.js'
+                'lib/angular-translate-loader-partial/angular-translate-loader-partial.js',
+                'lib/async/dist/async.js'
             ],
             libMin: [
                 'lib/ionic/js/ionic.bundle.min.js',
@@ -39,7 +40,8 @@
                 'lib/angular-mocks/angular-mocks.js',
                 'lib/angular-toastr/dist/angular-toastr.tpls.min.js',
                 'lib/angular-translate/angular-translate.min.js',
-                'lib/angular-translate-loader-partial/angular-translate-loader-partial.min.js'
+                'lib/angular-translate-loader-partial/angular-translate-loader-partial.min.js',
+                'lib/async/dist/async.min.js'
             ],
             core: [
                 'js/app.js',
