@@ -30,7 +30,8 @@
                 'lib/angular-toastr/dist/angular-toastr.tpls.js',
                 'lib/angular-translate/angular-translate.js',
                 'lib/angular-translate-loader-partial/angular-translate-loader-partial.js',
-                'lib/async/dist/async.js'
+                'lib/async/dist/async.js',
+                'lib/cryptojslib/rollups/md5.js'
             ],
             libMin: [
                 'lib/ionic/js/ionic.bundle.min.js',
@@ -41,7 +42,8 @@
                 'lib/angular-toastr/dist/angular-toastr.tpls.min.js',
                 'lib/angular-translate/angular-translate.min.js',
                 'lib/angular-translate-loader-partial/angular-translate-loader-partial.min.js',
-                'lib/async/dist/async.min.js'
+                'lib/async/dist/async.min.js',
+                'lib/cryptojslib/rollups/md5.js'
             ],
             core: [
                 'js/app.js',
