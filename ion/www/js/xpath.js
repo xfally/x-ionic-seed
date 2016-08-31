@@ -51,6 +51,7 @@
                 'js/app.js',
                 'js/directives.js',
                 'js/protocols.js',
+                'js/services.js',
                 'js/utils.js'
             ],
             mod: [],
