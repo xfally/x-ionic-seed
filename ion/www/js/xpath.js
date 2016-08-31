@@ -23,6 +23,7 @@
             ],
             core: [
                 'js/app.js',
+                'js/directives.js',
                 'js/utils.js'
             ],
             mod: [],
