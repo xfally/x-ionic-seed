@@ -22,7 +22,8 @@
                 'lib/ionic/js/ionic.bundle.min.js'
             ],
             core: [
-                'js/app.js'
+                'js/app.js',
+                'js/utils.js'
             ],
             mod: [],
             test: []
