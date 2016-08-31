@@ -50,6 +50,7 @@
             core: [
                 'js/app.js',
                 'js/directives.js',
+                'js/protocols.js',
                 'js/utils.js'
             ],
             mod: [],
