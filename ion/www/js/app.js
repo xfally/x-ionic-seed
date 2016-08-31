@@ -13,8 +13,9 @@
      * @ngdoc overview
      * @name starter
      * @requires ionic
+     * @requires service
      */
-    angular.module('starter', ['ionic'])
+    angular.module('starter', ['ionic', 'service'])
 
     .run(['$ionicPlatform',
         function($ionicPlatform) {
