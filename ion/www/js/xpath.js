@@ -18,7 +18,9 @@
             core: [
                 'css/ionic.app.css'
             ],
-            mod: []
+            mod: [
+                'mod/**/mod.css' // Tip: mod.css are loaded by ocLazyLoad for product
+            ]
         },
         js: {
             lib: [
@@ -54,8 +56,12 @@
                 'js/services.js',
                 'js/utils.js'
             ],
-            mod: [],
-            test: []
+            mod: [
+                'mod/**/mod.js' // Tip: mod.js are loaded by ocLazyLoad for product
+            ],
+            test: [
+                'mod/**/test.js' // Tip: test.js are loaded by karma for test
+            ]
         }
     };
 
