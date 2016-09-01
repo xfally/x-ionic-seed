@@ -9,7 +9,8 @@
         ],
         "childMods": [
             "introduce",
-            "about"
+            "about",
+            "test"
         ]
     }
 }
