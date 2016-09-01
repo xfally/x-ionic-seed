@@ -127,7 +127,7 @@ gulp.task('jsdoc', shell.task([
     '-t node_modules/angular-jsdoc/angular-template ' + // template file
     '-d jsdoc ' + // output directory
     '../README.md ' + // to include README.md as index contents
-    '-r www/js' // source code directory
+    '-r www/js www/mod' // source code directory
 ]));
 
 //== watch file change ==//
