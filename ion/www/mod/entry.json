@@ -3,7 +3,9 @@
     "description": "Active the mods you want.",
     "ver": "0.0.1",
     "entry": {
-        "coreMods": [],
+        "coreMods": [
+            "common"
+        ],
         "childMods": []
     }
 }
