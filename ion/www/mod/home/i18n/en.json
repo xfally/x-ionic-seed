@@ -1,0 +1,23 @@
+{
+    "HOME": {
+        "TITLE": "Home",
+        "DESCRIPTION": "Hi~ I'am the home page of App",
+        "CONTENT": {
+            "APP_NAME": "Starter",
+            "HELLO": "Hello, Friend!",
+            "MENU": "Menu",
+            "LOGIN": "Login",
+            "LOGOUT": "Logout",
+            "LOGOUT_OK": "Logout successfully",
+            "UPDATE": {
+                "TITLE": "Update",
+                "DESCRIPTION": "Check software update",
+                "CONTENT": {
+                    "UPDATE_NOW": "Update now",
+                    "UPDATE_LATER": "Later",
+                    "APP_HAS_NEW_VER": "New App version is available. Do you want to upgrade now?"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,44 @@
+<!-- WARNING: if ion-view and ion-content don't exist, ion-nav-bar won't work correctly!
+Notice to use ion-view to wrap all controls, and insert blank ion-content at the head! -->
+<ion-view view-title="{{'HOME.TITLE' | translate}}" hide-nav-bar="data.local.isHome">
+  <ion-content>
+  </ion-content>
+  <ion-side-menus>
+    <!-- Main content -->
+    <ion-side-menu-content>
+      <ion-header-bar class="bar-positive">
+        <button class="button button-icon" ng-click="action.toggleSideMenu()">
+          <i class="icon ion-navicon"></i>
+          <i class="icon ion-record danger" ng-if="data.local.hasNewAppVer"></i>
+        </button>
+        <h1 class="title" translate="HOME.CONTENT.APP_NAME"></h1>
+        <button class="button button-icon" ng-if="data.local.isConnect" ng-click="action.login()">
+          <span ng-hide="data.local.isLogin" translate="HOME.CONTENT.LOGIN"></span>
+          <span ng-show="data.local.isLogin" translate="HOME.CONTENT.LOGOUT"></span>
+        </button>
+      </ion-header-bar>
+      <ion-content class="home-bg" ng-class="{'portrait':'portrait', 'landscape':'landscape'}[serviceBundle.serviceValue.viewport.orientation]" scroll="false">
+        <div class="full center-container">
+          <h1 class="primary text-center" translate="HOME.CONTENT.HELLO"></h1>
+        </div>
+      </ion-content>
+    </ion-side-menu-content>
+    <!-- Left menu -->
+    <ion-side-menu side="left">
+      <ion-header-bar class="bar-positive">
+        <h1 class="title" translate="HOME.CONTENT.MENU"></h1>
+      </ion-header-bar>
+      <ion-content class="home-bg">
+        <ion-list>
+          <ion-item class="item-icon-left item-icon-right" ng-repeat="menu in serviceBundle.serviceValue.menus.sideMenus" ng-click="action.jumpToMod(menu.link)">
+            <i class="icon ion-record assertive" ng-if="menu.link == 'about' && data.local.hasNewAppVer"></i>
+            <img class="item-icon" ng-src="{{menu.icon}}"></img>
+            {{menu.title | translate}}
+            <i class="icon ion-chevron-right"></i>
+          </ion-item>
+        </ion-list>
+      </ion-content>
+    </ion-side-menu>
+  </ion-side-menus>
+</ion-view>
+
