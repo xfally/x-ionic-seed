@@ -1,0 +1,8 @@
+{
+    "mod": "introduce",
+    "description": "Introduce pages will be shown at first time the app starts after installed or updated.",
+    "ver": "0.0.1",
+    "entry": {
+        "location": "hide"
+    }
+}
