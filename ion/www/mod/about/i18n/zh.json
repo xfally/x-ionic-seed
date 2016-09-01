@@ -1,0 +1,17 @@
+{
+    "ABOUT": {
+        "TITLE": "关于",
+        "DESCRIPTION": "关于本App，包括版本号与更新等。",
+        "CONTENT": {
+            "CHECK_UPDATE": "检查更新",
+            "CHECKING": "正在检查更新...",
+            "NO_INTERNET": "网络未连接",
+            "HAS_NEW_VERSION": "有新版本",
+            "NO_NEW_VERSION": "已经是最新版本",
+            "NOTIFICATION": "通知",
+            "INTRODUCTION": "欢迎页",
+            "PERMISSION_DENIED": "权限不足，请打开应用的通知权限",
+            "COPYRIGHT": "Copyright © 2016 xfally，保留所有权利"
+        }
+    }
+}

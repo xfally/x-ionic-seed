@@ -1,0 +1,8 @@
+{
+    "mod": "about",
+    "description": "About this App, including version and update...",
+    "ver": "0.0.1",
+    "entry": {
+        "location": "sideMenu"
+    }
+}
