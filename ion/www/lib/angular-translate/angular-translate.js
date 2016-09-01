@@ -1,7 +1,7 @@
 /*!
- * angular-translate - v2.11.1 - 2016-07-17
+ * angular-translate - v2.8.1 - 2015-10-01
  * 
- * Copyright (c) 2016 The angular-translate team, Pascal Precht; Licensed MIT
+ * Copyright (c) 2015 The angular-translate team, Pascal Precht; Licensed MIT
  */
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
@@ -26,13 +26,6 @@
  * @description
  * The main module which holds everything together.
  */
-runTranslate.$inject = ['$translate'];
-$translate.$inject = ['$STORAGE_KEY', '$windowProvider', '$translateSanitizationProvider', 'pascalprechtTranslateOverrider'];
-$translateDefaultInterpolation.$inject = ['$interpolate', '$translateSanitization'];
-translateDirective.$inject = ['$translate', '$q', '$interpolate', '$compile', '$parse', '$rootScope'];
-translateCloakDirective.$inject = ['$translate', '$rootScope'];
-translateFilterFactory.$inject = ['$parse', '$translate'];
-$translationCache.$inject = ['$cacheFactory'];
 angular.module('pascalprecht.translate', ['ng'])
   .run(runTranslate);
 
@@ -66,6 +59,7 @@ function runTranslate($translate) {
     $translate.use($translate.preferredLanguage());
   }
 }
+runTranslate.$inject = ['$translate'];
 
 runTranslate.displayName = 'runTranslate';
 
@@ -310,29 +304,13 @@ function $translateSanitizationProvider () {
     return $sanitize(value);
   };
 
-  var mapInterpolationParameters = function (value, iteratee, stack) {
+  var mapInterpolationParameters = function (value, iteratee) {
     if (angular.isObject(value)) {
       var result = angular.isArray(value) ? [] : {};
 
-      if (!stack) {
-        stack = [];
-      } else {
-        if (stack.indexOf(value) > -1) {
-          throw new Error('pascalprecht.translate.$translateSanitization: Error cannot interpolate parameter due recursive object');
-        }
-      }
-
-      stack.push(value);
       angular.forEach(value, function (propertyValue, propertyKey) {
-
-        /* Skipping function properties. */
-        if (angular.isFunction(propertyValue)) {
-          return;
-        }
-
-        result[propertyKey] = mapInterpolationParameters(propertyValue, iteratee, stack);
+        result[propertyKey] = mapInterpolationParameters(propertyValue, iteratee);
       });
-      stack.splice(-1, 1); // remove last
 
       return result;
     } else if (angular.isNumber(value)) {
@@ -383,11 +361,9 @@ function $translate($STORAGE_KEY, $windowProvider, $translateSanitizationProvide
       $forceAsyncReloadEnabled = false,
       $nestedObjectDelimeter = '.',
       $isReady = false,
-      $keepContent = false,
       loaderCache,
       directivePriority = 0,
       statefulFilter = true,
-      postProcessFn,
       uniformLanguageTagResolver = 'default',
       languageTagResolver = {
         'default': function (tag) {
@@ -402,15 +378,10 @@ function $translate($STORAGE_KEY, $windowProvider, $translateSanitizationProvide
           var temp = (tag || '').split('_').join('-');
           var parts = temp.split('-');
           return parts.length > 1 ? (parts[0].toLowerCase() + '-' + parts[1].toUpperCase()) : temp;
-        },
-        'iso639-1': function (tag) {
-          var temp = (tag || '').split('_').join('-');
-          var parts = temp.split('-');
-          return parts[0].toLowerCase();
         }
       };
 
-  var version = '2.11.1';
+  var version = '2.8.1';
 
   // tries to determine the browsers language
   var getFirstBrowserLanguage = function () {
@@ -492,9 +463,6 @@ function $translate($STORAGE_KEY, $windowProvider, $translateSanitizationProvide
   };
 
   var negotiateLocale = function (preferred) {
-    if(!preferred) {
-      return;
-    }
 
     var avail = [],
         locale = angular.lowercase(preferred),
@@ -505,7 +473,6 @@ function $translate($STORAGE_KEY, $windowProvider, $translateSanitizationProvide
       avail.push(angular.lowercase($availableLanguageKeys[i]));
     }
 
-    // Check for an exact match in our list of available keys
     if (indexOf(avail, locale) > -1) {
       return preferred;
     }
@@ -513,33 +480,32 @@ function $translate($STORAGE_KEY, $windowProvider, $translateSanitizationProvide
     if ($languageKeyAliases) {
       var alias;
       for (var langKeyAlias in $languageKeyAliases) {
-        if ($languageKeyAliases.hasOwnProperty(langKeyAlias)) {
-          var hasWildcardKey = false;
-          var hasExactKey = Object.prototype.hasOwnProperty.call($languageKeyAliases, langKeyAlias) &&
-            angular.lowercase(langKeyAlias) === angular.lowercase(preferred);
+        var hasWildcardKey = false;
+        var hasExactKey = Object.prototype.hasOwnProperty.call($languageKeyAliases, langKeyAlias) &&
+          angular.lowercase(langKeyAlias) === angular.lowercase(preferred);
 
-          if (langKeyAlias.slice(-1) === '*') {
-            hasWildcardKey = langKeyAlias.slice(0, -1) === preferred.slice(0, langKeyAlias.length - 1);
-          }
-          if (hasExactKey || hasWildcardKey) {
-            alias = $languageKeyAliases[langKeyAlias];
-            if (indexOf(avail, angular.lowercase(alias)) > -1) {
-              return alias;
-            }
+        if (langKeyAlias.slice(-1) === '*') {
+          hasWildcardKey = langKeyAlias.slice(0, -1) === preferred.slice(0, langKeyAlias.length-1);
+        }
+        if (hasExactKey || hasWildcardKey) {
+          alias = $languageKeyAliases[langKeyAlias];
+          if (indexOf(avail, angular.lowercase(alias)) > -1) {
+            return alias;
           }
         }
       }
     }
 
-    // Check for a language code without region
-    var parts = preferred.split('_');
+    if (preferred) {
+      var parts = preferred.split('_');
 
-    if (parts.length > 1 && indexOf(avail, angular.lowercase(parts[0])) > -1) {
-      return parts[0];
+      if (parts.length > 1 && indexOf(avail, angular.lowercase(parts[0])) > -1) {
+        return parts[0];
+      }
     }
 
-    // If everything fails, return undefined.
-    return;
+    // If everything fails, just return the preferred, unchanged.
+    return preferred;
   };
 
   /**
@@ -574,7 +540,7 @@ function $translate($STORAGE_KEY, $windowProvider, $translateSanitizationProvide
    * registered with no language key. Invoking it with a language key returns the
    * related translation table.
    *
-   * @param {string} langKey A language key.
+   * @param {string} key A language key.
    * @param {object} translationTable A plain old JavaScript object that represents a translation table.
    *
    */
@@ -893,20 +859,6 @@ function $translate($STORAGE_KEY, $windowProvider, $translateSanitizationProvide
     return $uses;
   };
 
-  /**
-   * @ngdoc function
-   * @name pascalprecht.translate.$translateProvider#resolveClientLocale
-   * @methodOf pascalprecht.translate.$translateProvider
-   *
-   * @description
-   * This returns the current browser/client's language key. The result is processed with the configured uniform tag resolver.
-   *
-   * @returns {string} the current client/browser language key
-   */
-  this.resolveClientLocale = function () {
-    return getLocale();
-  };
-
  /**
    * @ngdoc function
    * @name pascalprecht.translate.$translateProvider#storageKey
@@ -1208,7 +1160,7 @@ function $translate($STORAGE_KEY, $windowProvider, $translateSanitizationProvide
     if (!$availableLanguageKeys.length) {
       $preferredLanguage = locale;
     } else {
-      $preferredLanguage = negotiateLocale(locale) || locale;
+      $preferredLanguage = negotiateLocale(locale);
     }
 
     return this;
@@ -1320,48 +1272,6 @@ function $translate($STORAGE_KEY, $windowProvider, $translateSanitizationProvide
   };
 
   /**
-   * @ngdoc function
-   * @name pascalprecht.translate.$translateProvider#postProcess
-   * @methodOf pascalprecht.translate.$translateProvider
-   *
-   * @description
-   * The post processor will be intercept right after the translation result. It can modify the result.
-   *
-   * @param {object} fn Function or service name (string) to be called after the translation value has been set / resolved. The function itself will enrich every value being processed and then continue the normal resolver process
-   */
-  this.postProcess = function (fn) {
-    if (fn) {
-      postProcessFn = fn;
-    } else {
-      postProcessFn = undefined;
-    }
-    return this;
-  };
-
-  /**
-   * @ngdoc function
-   * @name pascalprecht.translate.$translateProvider#keepContent
-   * @methodOf pascalprecht.translate.$translateProvider
-   *
-   * @description
-   * If keepContent is set to true than translate directive will always use innerHTML
-   * as a default translation
-   *
-   * Example:
-   * <pre>
-   *  app.config(function ($translateProvider) {
-   *    $translateProvider.keepContent(true);
-   *  });
-   * </pre>
-   *
-   * @param {boolean} value - valid values are true or false
-   */
-  this.keepContent = function (value) {
-    $keepContent = !(!value);
-    return this;
-  };
-
-  /**
    * @ngdoc object
    * @name pascalprecht.translate.$translate
    * @requires $interpolate
@@ -1385,9 +1295,6 @@ function $translate($STORAGE_KEY, $windowProvider, $translateSanitizationProvide
    *                                     is the translation id and the value the translation.
    * @param {object=} interpolateParams An object hash for dynamic values
    * @param {string} interpolationId The id of the interpolation to use
-   * @param {string} defaultTranslationText the optional default translation text that is written as
-   *                                        as default text in case it is not found in any configured language
-   * @param {string} forceLanguage A language to be used instead of the current language
    * @returns {object} promise
    */
   this.$get = [
@@ -1405,17 +1312,7 @@ function $translate($STORAGE_KEY, $windowProvider, $translateSanitizationProvide
           fallbackIndex,
           startFallbackIteration;
 
-      var $translate = function (translationId, interpolateParams, interpolationId, defaultTranslationText, forceLanguage) {
-        if (!$uses && $preferredLanguage) {
-          $uses = $preferredLanguage;
-        }
-        var uses = (forceLanguage && forceLanguage !== $uses) ? // we don't want to re-negotiate $uses
-              (negotiateLocale(forceLanguage) || forceLanguage) : $uses;
-
-        // Check forceLanguage is present
-        if (forceLanguage) {
-          loadTranslationsIfMissing(forceLanguage);
-        }
+      var $translate = function (translationId, interpolateParams, interpolationId, defaultTranslationText) {
 
         // Duck detection: If the first argument is an array, a bunch of translations was requested.
         // The result is an object.
@@ -1434,7 +1331,7 @@ function $translate($STORAGE_KEY, $windowProvider, $translateSanitizationProvide
                 deferred.resolve([translationId, value]);
               };
               // we don't care whether the promise was resolved or rejected; just store the values
-              $translate(translationId, interpolateParams, interpolationId, defaultTranslationText, forceLanguage).then(regardless, regardless);
+              $translate(translationId, interpolateParams, interpolationId, defaultTranslationText).then(regardless, regardless);
               return deferred.promise;
             };
             for (var i = 0, c = translationIds.length; i < c; i++) {
@@ -1459,7 +1356,7 @@ function $translate($STORAGE_KEY, $windowProvider, $translateSanitizationProvide
         var promiseToWaitFor = (function () {
           var promise = $preferredLanguage ?
             langPromises[$preferredLanguage] :
-            langPromises[uses];
+            langPromises[$uses];
 
           fallbackIndex = 0;
 
@@ -1491,18 +1388,14 @@ function $translate($STORAGE_KEY, $windowProvider, $translateSanitizationProvide
           // no promise to wait for? okay. Then there's no loader registered
           // nor is a one pending for language that comes from storage.
           // We can just translate.
-          determineTranslation(translationId, interpolateParams, interpolationId, defaultTranslationText, uses).then(deferred.resolve, deferred.reject);
+          determineTranslation(translationId, interpolateParams, interpolationId, defaultTranslationText).then(deferred.resolve, deferred.reject);
         } else {
           var promiseResolved = function () {
-            // $uses may have changed while waiting
-            if (!forceLanguage) {
-              uses = $uses;
-            }
-            determineTranslation(translationId, interpolateParams, interpolationId, defaultTranslationText, uses).then(deferred.resolve, deferred.reject);
+            determineTranslation(translationId, interpolateParams, interpolationId, defaultTranslationText).then(deferred.resolve, deferred.reject);
           };
           promiseResolved.displayName = 'promiseResolved';
 
-          promiseToWaitFor['finally'](promiseResolved);
+          promiseToWaitFor['finally'](promiseResolved, deferred.reject);
         }
         return deferred.promise;
       };
@@ -1540,7 +1433,7 @@ function $translate($STORAGE_KEY, $windowProvider, $translateSanitizationProvide
        * language and informs registered interpolators to also use the given
        * key as locale.
        *
-       * @param {string} key Locale key.
+       * @param {key} Locale key.
        */
       var useLanguage = function (key) {
         $uses = key;
@@ -1710,11 +1603,7 @@ function $translate($STORAGE_KEY, $windowProvider, $translateSanitizationProvide
               getFallbackTranslation(langKey, translation.substr(2), interpolateParams, Interpolator)
                 .then(deferred.resolve, deferred.reject);
             } else {
-              var interpolatedValue = Interpolator.interpolate(translationTable[translationId], interpolateParams);
-              interpolatedValue = applyPostProcessing(translationId, translationTable[translationId], interpolatedValue, interpolateParams, langKey);
-
-              deferred.resolve(interpolatedValue);
-
+              deferred.resolve(Interpolator.interpolate(translationTable[translationId], interpolateParams));
             }
             Interpolator.setLocale($uses);
           } else {
@@ -1748,7 +1637,6 @@ function $translate($STORAGE_KEY, $windowProvider, $translateSanitizationProvide
         if (translationTable && Object.prototype.hasOwnProperty.call(translationTable, translationId)) {
           Interpolator.setLocale(langKey);
           result = Interpolator.interpolate(translationTable[translationId], interpolateParams);
-          result = applyPostProcessing(translationId, translationTable[translationId], result, interpolateParams, langKey);
           if (result.substr(0, 2) === '@:') {
             return getFallbackTranslationInstant(langKey, result.substr(2), interpolateParams, Interpolator);
           }
@@ -1766,16 +1654,14 @@ function $translate($STORAGE_KEY, $windowProvider, $translateSanitizationProvide
        * Translate by missing translation handler.
        *
        * @param translationId
-       * @param interpolateParams
-       * @param defaultTranslationText
        * @returns translation created by $missingTranslationHandler or translationId is $missingTranslationHandler is
        * absent
        */
-      var translateByHandler = function (translationId, interpolateParams, defaultTranslationText) {
+      var translateByHandler = function (translationId, interpolateParams) {
         // If we have a handler factory - we might also call it here to determine if it provides
         // a default text for a translationid that can't be found anywhere in our tables
         if ($missingTranslationHandlerFactory) {
-          var resultString = $injector.get($missingTranslationHandlerFactory)(translationId, $uses, interpolateParams, defaultTranslationText);
+          var resultString = $injector.get($missingTranslationHandlerFactory)(translationId, $uses, interpolateParams);
           if (resultString !== undefined) {
             return resultString;
           } else {
@@ -1805,13 +1691,11 @@ function $translate($STORAGE_KEY, $windowProvider, $translateSanitizationProvide
         if (fallbackLanguageIndex < $fallbackLanguage.length) {
           var langKey = $fallbackLanguage[fallbackLanguageIndex];
           getFallbackTranslation(langKey, translationId, interpolateParams, Interpolator).then(
-            function (data) {
-                deferred.resolve(data);
-            },
+            deferred.resolve,
             function () {
               // Look in the next fallback language for a translation.
               // It delays the resolving by passing another promise to resolve.
-              return resolveForFallbackLanguage(fallbackLanguageIndex + 1, translationId, interpolateParams, Interpolator, defaultTranslationText).then(deferred.resolve, deferred.reject);
+              resolveForFallbackLanguage(fallbackLanguageIndex + 1, translationId, interpolateParams, Interpolator, defaultTranslationText).then(deferred.resolve);
             }
           );
         } else {
@@ -1822,12 +1706,7 @@ function $translate($STORAGE_KEY, $windowProvider, $translateSanitizationProvide
           } else {
             // if no default translation is set and an error handler is defined, send it to the handler
             // and then return the result
-            if ($missingTranslationHandlerFactory) {
-              deferred.resolve(translateByHandler(translationId, interpolateParams));
-            } else {
-              deferred.reject(translateByHandler(translationId, interpolateParams));
-            }
-
+            deferred.resolve(translateByHandler(translationId, interpolateParams));
           }
         }
         return deferred.promise;
@@ -1885,11 +1764,11 @@ function $translate($STORAGE_KEY, $windowProvider, $translateSanitizationProvide
         return resolveForFallbackLanguageInstant((startFallbackIteration>0 ? startFallbackIteration : fallbackIndex), translationId, interpolateParams, Interpolator);
       };
 
-      var determineTranslation = function (translationId, interpolateParams, interpolationId, defaultTranslationText, uses) {
+      var determineTranslation = function (translationId, interpolateParams, interpolationId, defaultTranslationText) {
 
         var deferred = $q.defer();
 
-        var table = uses ? $translationTable[uses] : $translationTable,
+        var table = $uses ? $translationTable[$uses] : $translationTable,
             Interpolator = (interpolationId) ? interpolatorHashMap[interpolationId] : defaultInterpolator;
 
         // if the translation id exists, we can just interpolate it
@@ -1899,25 +1778,22 @@ function $translate($STORAGE_KEY, $windowProvider, $translateSanitizationProvide
           // If using link, rerun $translate with linked translationId and return it
           if (translation.substr(0, 2) === '@:') {
 
-            $translate(translation.substr(2), interpolateParams, interpolationId, defaultTranslationText, uses)
+            $translate(translation.substr(2), interpolateParams, interpolationId, defaultTranslationText)
               .then(deferred.resolve, deferred.reject);
           } else {
-            //
-            var resolvedTranslation = Interpolator.interpolate(translation, interpolateParams);
-            resolvedTranslation = applyPostProcessing(translationId, translation, resolvedTranslation, interpolateParams, uses);
-            deferred.resolve(resolvedTranslation);
+            deferred.resolve(Interpolator.interpolate(translation, interpolateParams));
           }
         } else {
           var missingTranslationHandlerTranslation;
           // for logging purposes only (as in $translateMissingTranslationHandlerLog), value is not returned to promise
           if ($missingTranslationHandlerFactory && !pendingLoader) {
-            missingTranslationHandlerTranslation = translateByHandler(translationId, interpolateParams, defaultTranslationText);
+            missingTranslationHandlerTranslation = translateByHandler(translationId, interpolateParams);
           }
 
           // since we couldn't translate the inital requested translation id,
           // we try it now with one or more fallback languages, if fallback language(s) is
           // configured.
-          if (uses && $fallbackLanguage && $fallbackLanguage.length) {
+          if ($uses && $fallbackLanguage && $fallbackLanguage.length) {
             fallbackTranslation(translationId, interpolateParams, Interpolator, defaultTranslationText)
                 .then(function (translation) {
                   deferred.resolve(translation);
@@ -1944,9 +1820,9 @@ function $translate($STORAGE_KEY, $windowProvider, $translateSanitizationProvide
         return deferred.promise;
       };
 
-      var determineTranslationInstant = function (translationId, interpolateParams, interpolationId, uses) {
+      var determineTranslationInstant = function (translationId, interpolateParams, interpolationId) {
 
-        var result, table = uses ? $translationTable[uses] : $translationTable,
+        var result, table = $uses ? $translationTable[$uses] : $translationTable,
             Interpolator = defaultInterpolator;
 
         // if the interpolation id exists use custom interpolator
@@ -1960,10 +1836,9 @@ function $translate($STORAGE_KEY, $windowProvider, $translateSanitizationProvide
 
           // If using link, rerun $translate with linked translationId and return it
           if (translation.substr(0, 2) === '@:') {
-            result = determineTranslationInstant(translation.substr(2), interpolateParams, interpolationId, uses);
+            result = determineTranslationInstant(translation.substr(2), interpolateParams, interpolationId);
           } else {
             result = Interpolator.interpolate(translation, interpolateParams);
-            result = applyPostProcessing(translationId, translation, result, interpolateParams, uses);
           }
         } else {
           var missingTranslationHandlerTranslation;
@@ -1975,7 +1850,7 @@ function $translate($STORAGE_KEY, $windowProvider, $translateSanitizationProvide
           // since we couldn't translate the inital requested translation id,
           // we try it now with one or more fallback languages, if fallback language(s) is
           // configured.
-          if (uses && $fallbackLanguage && $fallbackLanguage.length) {
+          if ($uses && $fallbackLanguage && $fallbackLanguage.length) {
             fallbackIndex = 0;
             result = fallbackTranslationInstant(translationId, interpolateParams, Interpolator);
           } else if ($missingTranslationHandlerFactory && !pendingLoader && missingTranslationHandlerTranslation) {
@@ -1996,32 +1871,6 @@ function $translate($STORAGE_KEY, $windowProvider, $translateSanitizationProvide
           $nextLang = undefined;
         }
         langPromises[key] = undefined;
-      };
-
-      var applyPostProcessing = function (translationId, translation, resolvedTranslation, interpolateParams, uses) {
-        var fn = postProcessFn;
-
-        if (fn) {
-
-          if (typeof(fn) === 'string') {
-            // getting on-demand instance
-            fn = $injector.get(fn);
-          }
-          if (fn) {
-            return fn(translationId, translation, resolvedTranslation, interpolateParams, uses);
-          }
-        }
-
-        return resolvedTranslation;
-      };
-
-      var loadTranslationsIfMissing = function (key) {
-        if (!$translationTable[key] && $loaderFactory && !langPromises[key]) {
-          langPromises[key] = loadAsync(key).then(function (translation) {
-            translations(translation.key, translation.table);
-            return translation;
-          });
-        }
       };
 
       /**
@@ -2165,22 +2014,6 @@ function $translate($STORAGE_KEY, $windowProvider, $translateSanitizationProvide
 
       /**
        * @ngdoc function
-       * @name pascalprecht.translate.$translate#negotiateLocale
-       * @methodOf pascalprecht.translate.$translate
-       *
-       * @description
-       * Returns a language key based on available languages and language aliases. If a
-       * language key cannot be resolved, returns undefined.
-       *
-       * If no or a falsy key is given, returns undefined.
-       *
-       * @param {string} [key] Language key
-       * @return {string|undefined} Language key or undefined if no language key is found.
-       */
-      $translate.negotiateLocale = negotiateLocale;
-
-      /**
-       * @ngdoc function
        * @name pascalprecht.translate.$translate#use
        * @methodOf pascalprecht.translate.$translate
        *
@@ -2215,19 +2048,14 @@ function $translate($STORAGE_KEY, $windowProvider, $translateSanitizationProvide
 
         // Try to get the aliased language key
         var aliasedKey = negotiateLocale(key);
-        // Ensure only registered language keys will be loaded
-        if ($availableLanguageKeys.length > 0 && !aliasedKey) {
-          return $q.reject(key);
-        }
-
         if (aliasedKey) {
           key = aliasedKey;
         }
 
         // if there isn't a translation table for the language we've requested,
         // we load it asynchronously
-        $nextLang = key;
         if (($forceAsyncReloadEnabled || !$translationTable[key]) && $loaderFactory && !langPromises[key]) {
+          $nextLang = key;
           langPromises[key] = loadAsync(key).then(function (translation) {
             translations(translation.key, translation.table);
             deferred.resolve(translation.key);
@@ -2244,22 +2072,15 @@ function $translate($STORAGE_KEY, $windowProvider, $translateSanitizationProvide
           langPromises[key]['finally'](function () {
             clearNextLangAndPromise(key);
           });
-        } else if (langPromises[key]) {
+        } else if ($nextLang === key && langPromises[key]) {
           // we are already loading this asynchronously
           // resolve our new deferred when the old langPromise is resolved
           langPromises[key].then(function (translation) {
-            if ($nextLang === translation.key) {
-              useLanguage(translation.key);
-            }
             deferred.resolve(translation.key);
             return translation;
           }, function (key) {
-            // find first available fallback language if that request has failed
-            if (!$uses && $fallbackLanguage && $fallbackLanguage.length > 0) {
-              return $translate.use($fallbackLanguage[0]).then(deferred.resolve, deferred.reject);
-            } else {
-              return deferred.reject(key);
-            }
+            deferred.reject(key);
+            return $q.reject(key);
           });
         } else {
           deferred.resolve(key);
@@ -2267,20 +2088,6 @@ function $translate($STORAGE_KEY, $windowProvider, $translateSanitizationProvide
         }
 
         return deferred.promise;
-      };
-
-      /**
-       * @ngdoc function
-       * @name pascalprecht.translate.$translate#resolveClientLocale
-       * @methodOf pascalprecht.translate.$translate
-       *
-       * @description
-       * This returns the current browser/client's language key. The result is processed with the configured uniform tag resolver.
-       *
-       * @returns {string} the current client/browser language key
-       */
-      $translate.resolveClientLocale = function () {
-        return getLocale();
       };
 
       /**
@@ -2323,20 +2130,6 @@ function $translate($STORAGE_KEY, $windowProvider, $translateSanitizationProvide
        */
       $translate.isForceAsyncReloadEnabled = function () {
         return $forceAsyncReloadEnabled;
-      };
-
-      /**
-       * @ngdoc function
-       * @name pascalprecht.translate.$translate#isKeepContent
-       * @methodOf pascalprecht.translate.$translate
-       *
-       * @description
-       * Returns whether keepContent or not
-       *
-       * @return {boolean} keepContent value
-       */
-      $translate.isKeepContent = function () {
-        return $keepContent;
       };
 
       /**
@@ -2426,7 +2219,6 @@ function $translate($STORAGE_KEY, $windowProvider, $translateSanitizationProvide
               useLanguage($uses);
             }
             resolve();
-            return data;
           };
           oneTranslationsLoaded.displayName = 'refreshPostProcessor';
 
@@ -2455,24 +2247,14 @@ function $translate($STORAGE_KEY, $windowProvider, $translateSanitizationProvide
        *                                     each key is the translation id and the value the translation.
        * @param {object} interpolateParams Params
        * @param {string} interpolationId The id of the interpolation to use
-       * @param {string} forceLanguage A language to be used instead of the current language
        *
        * @return {string|object} translation
        */
-      $translate.instant = function (translationId, interpolateParams, interpolationId, forceLanguage) {
-
-        // we don't want to re-negotiate $uses
-        var uses = (forceLanguage && forceLanguage !== $uses) ? // we don't want to re-negotiate $uses
-              (negotiateLocale(forceLanguage) || forceLanguage) : $uses;
+      $translate.instant = function (translationId, interpolateParams, interpolationId) {
 
         // Detect undefined and null values to shorten the execution and prevent exceptions
         if (translationId === null || angular.isUndefined(translationId)) {
           return translationId;
-        }
-
-        // Check forceLanguage is present
-        if (forceLanguage) {
-          loadTranslationsIfMissing(forceLanguage);
         }
 
         // Duck detection: If the first argument is an array, a bunch of translations was requested.
@@ -2480,7 +2262,7 @@ function $translate($STORAGE_KEY, $windowProvider, $translateSanitizationProvide
         if (angular.isArray(translationId)) {
           var results = {};
           for (var i = 0, c = translationId.length; i < c; i++) {
-            results[translationId[i]] = $translate.instant(translationId[i], interpolateParams, interpolationId, forceLanguage);
+            results[translationId[i]] = $translate.instant(translationId[i], interpolateParams, interpolationId);
           }
           return results;
         }
@@ -2499,8 +2281,8 @@ function $translate($STORAGE_KEY, $windowProvider, $translateSanitizationProvide
         if ($preferredLanguage) {
           possibleLangKeys.push($preferredLanguage);
         }
-        if (uses) {
-          possibleLangKeys.push(uses);
+        if ($uses) {
+          possibleLangKeys.push($uses);
         }
         if ($fallbackLanguage && $fallbackLanguage.length) {
           possibleLangKeys = possibleLangKeys.concat($fallbackLanguage);
@@ -2509,7 +2291,9 @@ function $translate($STORAGE_KEY, $windowProvider, $translateSanitizationProvide
           var possibleLangKey = possibleLangKeys[j];
           if ($translationTable[possibleLangKey]) {
             if (typeof $translationTable[possibleLangKey][translationId] !== 'undefined') {
-              result = determineTranslationInstant(translationId, interpolateParams, interpolationId, uses);
+              result = determineTranslationInstant(translationId, interpolateParams, interpolationId);
+            } else if ($notFoundIndicatorLeft || $notFoundIndicatorRight) {
+              result = applyNotFoundIndicators(translationId);
             }
           }
           if (typeof result !== 'undefined') {
@@ -2518,14 +2302,10 @@ function $translate($STORAGE_KEY, $windowProvider, $translateSanitizationProvide
         }
 
         if (!result && result !== '') {
-          if ($notFoundIndicatorLeft || $notFoundIndicatorRight) {
-            result = applyNotFoundIndicators(translationId);
-          } else {
-            // Return translation of default interpolator if not found anything.
-            result = defaultInterpolator.interpolate(translationId, interpolateParams);
-            if ($missingTranslationHandlerFactory && !pendingLoader) {
-              result = translateByHandler(translationId, interpolateParams);
-            }
+          // Return translation of default interpolator if not found anything.
+          result = defaultInterpolator.interpolate(translationId, interpolateParams);
+          if ($missingTranslationHandlerFactory && !pendingLoader) {
+            result = translateByHandler(translationId, interpolateParams);
           }
         }
 
@@ -2617,25 +2397,6 @@ function $translate($STORAGE_KEY, $windowProvider, $translateSanitizationProvide
         return deferred.promise;
       };
 
-      /**
-       * @ngdoc function
-       * @name pascalprecht.translate.$translate#getAvailableLanguageKeys
-       * @methodOf pascalprecht.translate.$translate
-       *
-       * @description
-       * This function simply returns the registered language keys being defined before in the config phase
-       * With this, an application can use the array to provide a language selection dropdown or similar
-       * without any additional effort
-       *
-       * @returns {object} returns the list of possibly registered language keys and mapping or null if not defined
-       */
-      $translate.getAvailableLanguageKeys = function () {
-        if ($availableLanguageKeys.length > 0) {
-          return $availableLanguageKeys;
-        }
-        return null;
-      };
-
       // Whenever $translateReady is being fired, this will ensure the state of $isReady
       var globalOnReadyListener = $rootScope.$on('$translateReady', function () {
         $onReadyDeferred.resolve();
@@ -2681,6 +2442,7 @@ function $translate($STORAGE_KEY, $windowProvider, $translateSanitizationProvide
     }
   ];
 }
+$translate.$inject = ['$STORAGE_KEY', '$windowProvider', '$translateSanitizationProvider', 'pascalprechtTranslateOverrider'];
 
 $translate.displayName = 'displayName';
 
@@ -2752,35 +2514,24 @@ function $translateDefaultInterpolation ($interpolate, $translateSanitization) {
    * @methodOf pascalprecht.translate.$translateDefaultInterpolation
    *
    * @description
-   * Interpolates given value agains given interpolate params using angulars
+   * Interpolates given string agains given interpolate params using angulars
    * `$interpolate` service.
-   *
-   * Since AngularJS 1.5, `value` must not be a string but can be anything input.
    *
    * @returns {string} interpolated string.
    */
-  $translateInterpolator.interpolate = function (value, interpolationParams) {
+  $translateInterpolator.interpolate = function (string, interpolationParams) {
     interpolationParams = interpolationParams || {};
     interpolationParams = $translateSanitization.sanitize(interpolationParams, 'params');
 
-    var interpolatedText;
-    if (angular.isNumber(value)) {
-      // numbers are safe
-      interpolatedText = '' + value;
-    } else if (angular.isString(value)) {
-      // strings must be interpolated (that's the job here)
-      interpolatedText = $interpolate(value)(interpolationParams);
-      interpolatedText = $translateSanitization.sanitize(interpolatedText, 'text');
-    } else {
-      // neither a number or a string, cant interpolate => empty string
-      interpolatedText = '';
-    }
+    var interpolatedText = $interpolate(string)(interpolationParams);
+    interpolatedText = $translateSanitization.sanitize(interpolatedText, 'text');
 
     return interpolatedText;
   };
 
   return $translateInterpolator;
 }
+$translateDefaultInterpolation.$inject = ['$interpolate', '$translateSanitization'];
 
 $translateDefaultInterpolation.displayName = '$translateDefaultInterpolation';
 
@@ -2793,7 +2544,7 @@ angular.module('pascalprecht.translate')
  * @requires $compile
  * @requires $filter
  * @requires $interpolate
- * @restrict AE
+ * @restrict A
  *
  * @description
  * Translates given translation id either through attribute or DOM content.
@@ -2805,7 +2556,6 @@ angular.module('pascalprecht.translate')
  * @param {string=} translate-attr-ATTR translate Translation id and put it into ATTR attribute.
  * @param {string=} translate-default will be used unless translation was successful
  * @param {boolean=} translate-compile (default true if present) defines locally activation of {@link pascalprecht.translate.$translateProvider#methods_usePostCompiling}
- * @param {boolean=} translate-keep-content (default true if present) defines that in case a KEY could not be translated, that the existing content is left in the innerHTML}
  *
  * @example
    <example module="ngView">
@@ -2822,7 +2572,6 @@ angular.module('pascalprecht.translate')
         <pre translate="WITH_VALUES" translate-values="{{values}}"></pre>
         <pre translate translate-values="{{values}}">WITH_VALUES</pre>
         <pre translate translate-attr-title="WITH_VALUES" translate-values="{{values}}"></pre>
-        <pre translate="WITH_CAMEL_CASE_KEY" translate-value-camel-case-key="Hi"></pre>
 
       </div>
     </file>
@@ -2833,8 +2582,7 @@ angular.module('pascalprecht.translate')
 
         $translateProvider.translations('en',{
           'TRANSLATION_ID': 'Hello there!',
-          'WITH_VALUES': 'The following value is dynamic: {{value}}',
-          'WITH_CAMEL_CASE_KEY': 'The interpolation key is camel cased: {{camelCaseKey}}'
+          'WITH_VALUES': 'The following value is dynamic: {{value}}'
         }).preferredLanguage('en');
 
       });
@@ -2871,10 +2619,6 @@ angular.module('pascalprecht.translate')
           element = $compile('<p translate translate-attr-title="TRANSLATION_ID"></p>')($rootScope);
           $rootScope.$digest();
           expect(element.attr('title')).toBe('Hello there!');
-
-          element = $compile('<p translate="WITH_CAMEL_CASE_KEY" translate-value-camel-case-key="Hello"></p>')($rootScope);
-          $rootScope.$digest();
-          expect(element.text()).toBe('The interpolation key is camel cased: Hello');
         });
       });
     </file>
@@ -2968,8 +2712,7 @@ function translateDirective($translate, $q, $interpolate, $compile, $parse, $roo
                 });
               }
             } else {
-              // do not assigne the translation id if it is empty.
-              translationIds.translate = !iElementText ? undefined : iElementText;
+              translationIds.translate = iElementText;
             }
           } else {
             translationIds.translate = translationId;
@@ -3010,7 +2753,6 @@ function translateDirective($translate, $q, $interpolate, $compile, $parse, $roo
 
         iAttr.$observe('translateDefault', function (value) {
           scope.defaultText = value;
-          updateTranslations();
         });
 
         if (translateValuesExist) {
@@ -3040,6 +2782,7 @@ function translateDirective($translate, $q, $interpolate, $compile, $parse, $roo
         // Master update function
         var updateTranslations = function () {
           for (var key in translationIds) {
+
             if (translationIds.hasOwnProperty(key) && translationIds[key] !== undefined) {
               updateTranslation(key, translationIds[key], scope, scope.interpolateParams, scope.defaultText, scope.translateNamespace);
             }
@@ -3054,7 +2797,7 @@ function translateDirective($translate, $q, $interpolate, $compile, $parse, $roo
               translationId = translateNamespace + translationId;
             }
 
-            $translate(translationId, interpolateParams, translateInterpolation, defaultTranslationText, scope.translateLanguage)
+            $translate(translationId, interpolateParams, translateInterpolation, defaultTranslationText)
               .then(function (translation) {
                 applyTranslation(translation, scope, true, translateAttr);
               }, function (translationId) {
@@ -3067,16 +2810,12 @@ function translateDirective($translate, $q, $interpolate, $compile, $parse, $roo
         };
 
         var applyTranslation = function (value, scope, successful, translateAttr) {
-          if (!successful) {
-            if (typeof scope.defaultText !== 'undefined') {
-              value = scope.defaultText;
-            }
-          }
           if (translateAttr === 'translate') {
             // default translate into innerHTML
-            if (successful || (!successful && !$translate.isKeepContent() && typeof iAttr.translateKeepContent === 'undefined')) {
-              iElement.empty().append(scope.preText + value + scope.postText);
+            if (!successful && typeof scope.defaultText !== 'undefined') {
+              value = scope.defaultText;
             }
+            iElement.empty().append(scope.preText + value + scope.postText);
             var globallyEnabled = $translate.isPostCompilingEnabled();
             var locallyDefined = typeof tAttr.translateCompile !== 'undefined';
             var locallyEnabled = locallyDefined && tAttr.translateCompile !== 'false';
@@ -3085,6 +2824,9 @@ function translateDirective($translate, $q, $interpolate, $compile, $parse, $roo
             }
           } else {
             // translate attribute
+            if (!successful && typeof scope.defaultText !== 'undefined') {
+              value = scope.defaultText;
+            }
             var attributeName = iAttr.$attr[translateAttr];
             if (attributeName.substr(0, 5) === 'data-') {
               // ensure html5 data prefix is stripped
@@ -3098,9 +2840,6 @@ function translateDirective($translate, $q, $interpolate, $compile, $parse, $roo
         if (translateValuesExist || translateValueExist || iAttr.translateDefault) {
           scope.$watch('interpolateParams', updateTranslations, true);
         }
-
-        // Replaced watcher on translateLanguage with event listener
-        var unbindTranslateLanguage = scope.$on('translateLanguageChanged', updateTranslations);
 
         // Ensures the text will be refreshed after the current language was changed
         // w/ $translate.use(...)
@@ -3118,14 +2857,12 @@ function translateDirective($translate, $q, $interpolate, $compile, $parse, $roo
           observeElementTranslation(iAttr.translate);
         }
         updateTranslations();
-        scope.$on('$destroy', function(){
-          unbindTranslateLanguage();
-          unbind();
-        });
+        scope.$on('$destroy', unbind);
       };
     }
   };
 }
+translateDirective.$inject = ['$translate', '$q', '$interpolate', '$compile', '$parse', '$rootScope'];
 
 /**
  * Returns the scope's namespace.
@@ -3169,7 +2906,7 @@ angular.module('pascalprecht.translate')
  */
 .directive('translateCloak', translateCloakDirective);
 
-function translateCloakDirective($translate, $rootScope) {
+function translateCloakDirective($translate) {
 
   'use strict';
 
@@ -3187,20 +2924,17 @@ function translateCloakDirective($translate, $rootScope) {
       applyCloak();
 
       return function linkFn(scope, iElement, iAttr) {
+        // Register a watcher for the defined translation allowing a fine tuned cloak
         if (iAttr.translateCloak && iAttr.translateCloak.length) {
-          // Register a watcher for the defined translation allowing a fine tuned cloak
           iAttr.$observe('translateCloak', function (translationId) {
             $translate(translationId).then(removeCloak, applyCloak);
-          });
-          // Register for change events as this is being another indicicator revalidating the cloak)
-          $rootScope.$on('$translateChangeSuccess', function () {
-            $translate(iAttr.translateCloak).then(removeCloak, applyCloak);
           });
         }
       };
     }
   };
 }
+translateCloakDirective.$inject = ['$translate'];
 
 translateCloakDirective.displayName = 'translateCloakDirective';
 
@@ -3299,77 +3033,6 @@ translateNamespaceDirective.displayName = 'translateNamespaceDirective';
 
 angular.module('pascalprecht.translate')
 /**
- * @ngdoc directive
- * @name pascalprecht.translate.directive:translateLanguage
- * @restrict A
- *
- * @description
- * Forces the language to the directives in the underlying scope.
- *
- * @param {string=} translate language that will be negotiated.
- *
- * @example
-   <example module="ngView">
-    <file name="index.html">
-      <div>
-
-        <div>
-            <h1 translate>HELLO</h1>
-        </div>
-
-        <div translate-language="de">
-            <h1 translate>HELLO</h1>
-        </div>
-
-      </div>
-    </file>
-    <file name="script.js">
-      angular.module('ngView', ['pascalprecht.translate'])
-
-      .config(function ($translateProvider) {
-
-        $translateProvider
-          .translations('en',{
-            'HELLO': 'Hello world!'
-          })
-          .translations('de',{
-            'HELLO': 'Hallo Welt!'
-          })
-          .preferredLanguage('en');
-
-      });
-
-    </file>
-   </example>
- */
-.directive('translateLanguage', translateLanguageDirective);
-
-function translateLanguageDirective() {
-
-  'use strict';
-
-  return {
-    restrict: 'A',
-    scope: true,
-    compile: function () {
-      return function linkFn(scope, iElement, iAttrs) {
-
-        iAttrs.$observe('translateLanguage', function (newTranslateLanguage) {
-          scope.translateLanguage = newTranslateLanguage;
-        });
-
-        scope.$watch('translateLanguage', function(){
-          scope.$broadcast('translateLanguageChanged');
-        });
-      };
-    }
-  };
-}
-
-translateLanguageDirective.displayName = 'translateLanguageDirective';
-
-angular.module('pascalprecht.translate')
-/**
  * @ngdoc filter
  * @name pascalprecht.translate.filter:translate
  * @requires $parse
@@ -3426,12 +3089,13 @@ function translateFilterFactory($parse, $translate) {
 
   'use strict';
 
-  var translateFilter = function (translationId, interpolateParams, interpolation, forceLanguage) {
+  var translateFilter = function (translationId, interpolateParams, interpolation) {
+
     if (!angular.isObject(interpolateParams)) {
       interpolateParams = $parse(interpolateParams)(this);
     }
 
-    return $translate.instant(translationId, interpolateParams, interpolation, forceLanguage);
+    return $translate.instant(translationId, interpolateParams, interpolation);
   };
 
   if ($translate.statefulFilter()) {
@@ -3440,6 +3104,7 @@ function translateFilterFactory($parse, $translate) {
 
   return translateFilter;
 }
+translateFilterFactory.$inject = ['$parse', '$translate'];
 
 translateFilterFactory.displayName = 'translateFilterFactory';
 
@@ -3465,6 +3130,7 @@ function $translationCache($cacheFactory) {
 
   return $cacheFactory('translations');
 }
+$translationCache.$inject = ['$cacheFactory'];
 
 $translationCache.displayName = '$translationCache';
 return 'pascalprecht.translate';

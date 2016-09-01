@@ -1,7 +1,7 @@
 /*!
- * angular-translate - v2.11.1 - 2016-07-17
+ * angular-translate - v2.8.1 - 2015-10-01
  * 
- * Copyright (c) 2016 The angular-translate team, Pascal Precht; Licensed MIT
+ * Copyright (c) 2015 The angular-translate team, Pascal Precht; Licensed MIT
  */
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
@@ -316,6 +316,7 @@ function $translatePartialLoader() {
       }
 
       var loaders = [],
+          deferred = $q.defer(),
           prioritizedParts = getPrioritizedParts();
 
       angular.forEach(prioritizedParts, function(part) {
@@ -325,17 +326,19 @@ function $translatePartialLoader() {
         part.urlTemplate = options.urlTemplate;
       });
 
-      return $q.all(loaders)
+      $q.all(loaders)
         .then(function() {
           var table = {};
-          prioritizedParts = getPrioritizedParts();
           angular.forEach(prioritizedParts, function(part) {
             deepExtend(table, part.tables[options.key]);
           });
-          return table;
+          deferred.resolve(table);
         }, function() {
-          return $q.reject(options.key);
-        });
+          deferred.reject(options.key);
+        }
+      );
+
+      return deferred.promise;
     };
 
     /**
