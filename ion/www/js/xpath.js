@@ -9,7 +9,9 @@
         css: {
             lib: [],
             libMin: [],
-            core: [],
+            core: [
+                'css/ionic.app.css'
+            ],
             mod: []
         },
         js: {
