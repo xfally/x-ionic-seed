@@ -10,6 +10,7 @@ var shell = require('gulp-shell');
 var jshint = require('gulp-jshint');
 var os = require('os');
 var Server = require('karma').Server;
+var argv = require('yargs').argv;
 
 // 'darwin', 'freebsd', 'linux', 'sunos' or 'win32'
 var platform = os.platform();
@@ -69,6 +70,14 @@ gulp.task('sass', function(done) {
         .pipe(gulp.dest('./www/css/'))
         .on('end', done);
 });
+
+//== bump app version ==//
+// Usage:
+// 1. gulp bump [-v]: query version
+// 2. gulp bump -v x.x.x: update version
+gulp.task('bump', shell.task([
+    './bump-version.sh ' + argv.v
+]));
 
 //== jshint ==//
 gulp.task('lint', function() {
