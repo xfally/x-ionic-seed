@@ -22,7 +22,7 @@
         APP: {
             ID: 'io.github.xfally.ionic.starter',
             NAME: 'Starter',
-            VER: '0.0.1'
+            VER: '0.1.0'
         },
         PROTOCOL: {
             SPEC_NAME: '?',
