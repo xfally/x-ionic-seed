@@ -1,0 +1,46 @@
+<ion-view view-title="{{'INTRODUCE.TITLE' | translate}}" hide-nav-bar="true">
+  <ion-content class="" scroll="false">
+    <ion-slide-box class="full">
+      <ion-slide>
+        <section class="introduce-background">
+          <img class="full " ng-src="{{data.local.images.walkthrough_bg_01}}">
+        </section>
+        <section class="introduce-foreground">
+          <img class="introduce-foreground-image" ng-src="{{data.local.images.walkthrough_01}}">
+        </section>
+        <hgroup class="introduce-title">
+          <h1 class="light text-center" translate="INTRODUCE.CONTENT.P1_LABEL_1"></h1>
+          <h5 class="light text-center" translate="INTRODUCE.CONTENT.P1_LABEL_2"></h5>
+        </hgroup>
+      </ion-slide>
+      <ion-slide>
+        <section class="introduce-background">
+          <img class="full " ng-src="{{data.local.images.walkthrough_bg_02}}">
+        </section>
+        <section class="introduce-foreground">
+          <img class="introduce-foreground-image" ng-src="{{data.local.images.walkthrough_02}}">
+        </section>
+        <hgroup class="introduce-title">
+          <h1 class="light text-center" translate="INTRODUCE.CONTENT.P2_LABEL_1"></h1>
+          <h5 class="light text-center" translate="INTRODUCE.CONTENT.P2_LABEL_2"></h5>
+        </hgroup>
+      </ion-slide>
+      <ion-slide>
+        <section class="introduce-background">
+          <img class="full " ng-src="{{data.local.images.walkthrough_bg_03}}">
+        </section>
+        <section class="introduce-foreground">
+          <img class="introduce-foreground-image" ng-src="{{data.local.images.walkthrough_03}}">
+        </section>
+        <hgroup class="introduce-title">
+          <h1 class="light text-center" translate="INTRODUCE.CONTENT.P3_LABEL_1"></h1>
+          <h5 class="light text-center" translate="INTRODUCE.CONTENT.P3_LABEL_2"></h5>
+        </hgroup>
+        <section id="footer">
+          <button class="horizontal-center button button-outline button-light introduce-footer-button" translate="INTRODUCE.CONTENT.P3_BUTTON" ng-click="serviceBundle.linkService.goBack()"></button>
+        </section>
+      </ion-slide>
+    </ion-slide-box>
+  </ion-content>
+</ion-view>
+

@@ -1,0 +1,15 @@
+{
+    "INTRODUCE": {
+        "TITLE": "介绍页面",
+        "DESCRIPTION": "当用户第一次打开App时，出现介绍页面",
+        "CONTENT": {
+            "P1_LABEL_1": "第一条",
+            "P1_LABEL_2": "首先介绍……",
+            "P2_LABEL_1": "第二条",
+            "P2_LABEL_2": "然后介绍……",
+            "P3_LABEL_1": "第三条",
+            "P3_LABEL_2": "最后介绍……",
+            "P3_BUTTON": "开始使用"
+        }
+    }
+}

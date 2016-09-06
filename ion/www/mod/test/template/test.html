@@ -1,0 +1,145 @@
+<ion-view>
+  <ion-nav-title translate="TEST-STYLE.TITLE">
+  </ion-nav-title>
+  <ion-content scroll="true">
+    <span class="list-alert text-center" translate="TEST-STYLE.CONTENT.TEST"></span>
+    <span class="list-title">spinner</span>
+    <div>
+      <ion-spinner icon="android"></ion-spinner>
+      <ion-spinner icon="ios"></ion-spinner>
+      <ion-spinner icon="ios-small"></ion-spinner>
+      <ion-spinner icon="bubbles"></ion-spinner>
+      <ion-spinner icon="circles"></ion-spinner>
+      <ion-spinner icon="crescent"></ion-spinner>
+      <ion-spinner icon="dots"></ion-spinner>
+      <ion-spinner icon="lines"></ion-spinner>
+      <ion-spinner icon="ripple"></ion-spinner>
+      <ion-spinner icon="spiral"></ion-spinner>
+    </div>
+    <span class="list-title">button-bar</span>
+    <div class="button-bar button-small">
+      <a class="button button-positive">First</a>
+      <a class="button button-balanced">Second</a>
+      <a class="button button-royal">Third</a>
+    </div>
+    <span class="list-title">list</span>
+    <div class="list">
+      <a class="item item-icon-left" href="#">
+        <i class="icon ion-email"></i> Check mail
+      </a>
+      <a class="item item-icon-left item-icon-right" href="#">
+        <i class="icon ion-chatbubble-working"></i> Call Ma
+        <i class="icon ion-ios-telephone-outline"></i>
+      </a>
+      <a class="item item-icon-left" href="#">
+        <i class="icon ion-mic-a"></i> Record album
+        <span class="item-note">Grammy</span>
+      </a>
+      <a class="item item-icon-left" href="#">
+        <i class="icon ion-person-stalker"></i> Friends
+        <span class="badge badge-assertive">0</span>
+      </a>
+    </div>
+    <span class="list-title">list including toggle</span>
+    <ul class="list">
+      <li class="item item-toggle">
+        HTML5
+        <label class="toggle toggle-assertive">
+          <input type="checkbox">
+          <div class="track">
+            <div class="handle"></div>
+          </div>
+        </label>
+      </li>
+    </ul>
+    <span class="list-title">list including checkbox</span>
+    <ul class="list">
+      <li class="item item-checkbox">
+        <label class="checkbox">
+          <input type="checkbox">
+        </label>Flux Capacitor
+      </li>
+      <li class="item item-checkbox">
+        <label class="checkbox">
+          <input type="checkbox">
+        </label>Flux Capacitor 2
+      </li>
+    </ul>
+    <span class="list-title">list including radio</span>
+    <ion-list>
+      <ion-radio ng-model="choice" ng-value="'A'">Choose A</ion-radio>
+      <ion-radio ng-model="choice" ng-value="'B'">Choose B</ion-radio>
+    </ion-list>
+    <span class="list-title">list including divider</span>
+    <div class="list">
+      <div class="item item-divider">
+        Candy Bars A
+      </div>
+      <a class="item" href="#">Butterfinger 1</a>
+      <a class="item" href="#">Butterfinger 2</a>
+      <div class="item item-divider">
+        Candy Bars B
+      </div>
+      <a class="item" href="#">Butterfinger 1</a>
+      <a class="item" href="#">Butterfinger 2</a>
+    </div>
+    <span class="list-title">list including avatar</span>
+    <div class="list">
+      <a class="item item-avatar" href="#">
+        <img src="mod/test/assets/images/poster.png">
+        <h2>Venkman</h2>
+        <p>Back off, man. I'm a scientist.</p>
+      </a>
+    </div>
+    <span class="list-title">list including thumbnail</span>
+    <div class="list">
+      <a class="item item-thumbnail-left" href="#">
+        <img src="mod/test/assets/images/lilin.jpeg">
+        <h2>Pretty Hate Machine</h2>
+        <p>Nine Inch Nails</p>
+      </a>
+    </div>
+    <span class="list-title">card</span>
+    <div class="card">
+      <div class="item item-divider">
+        I'm a Header in a Card!
+      </div>
+      <div class="item item-text-wrap">
+        This is a basic Card with some text.
+      </div>
+      <div class="item item-divider">
+        I'm a Footer in a Card!
+      </div>
+    </div>
+    <span class="list-title">list with card</span>
+    <div class="list card">
+      <a href="#" class="item item-icon-left">
+        <i class="icon ion-home"></i> Enter home address
+      </a>
+      <a href="#" class="item item-icon-left">
+        <i class="icon ion-ios-telephone"></i> Enter phone number
+      </a>
+      <a href="#" class="item item-icon-left">
+        <i class="icon ion-wifi"></i> Enter wireless password
+      </a>
+      <a href="#" class="item item-icon-left">
+        <i class="icon ion-card"></i> Enter card information
+      </a>
+    </div>
+    <span class="list-title">list with card including avatar, thumbnail</span>
+    <div class="list card">
+      <div class="item item-avatar">
+        <img src="mod/test/assets/images/poster.png">
+        <h2>Pretty Hate Machine</h2>
+        <p>Nine Inch Nails</p>
+      </div>
+      <div class="item item-image">
+        <img src="mod/test/assets/images/lilin.jpeg">
+      </div>
+      <a class="item item-icon-left assertive" href="http://www.xiami.com" target="_blank">
+        <i class="icon ion-music-note"></i> Start listening
+      </a>
+    </div>
+  </ion-content>
+</ion-view>
+

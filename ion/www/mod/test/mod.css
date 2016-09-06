@@ -1,0 +1,11 @@
+.test-modal.scroll-content .scroll {
+  height: 100% !important;
+}
+
+.test-modal-textarea {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  resize: none;
+}
+

@@ -1,0 +1,50 @@
+.home-bg {
+  background-color: #387ef5;
+  background-image: linear-gradient(to bottom, #ffffff 0, #387ef5 100%);
+  background-image: -webkit-linear-gradient(top, #ffffff 0, #387ef5 100%);
+  background-repeat: repeat-x;
+  background-size: 100% 100%;
+}
+
+.home-bg .item {
+  background-color: transparent;
+}
+
+.portrait .home-list {
+  height: 50%;
+  width: 100%;
+  float: left;
+}
+
+.portrait .home-grid {
+  height: 50%;
+  width: 100%;
+  float: left;
+}
+
+.landscape .home-list {
+  height: 100%;
+  width: 50%;
+  float: left;
+}
+
+.landscape .home-grid {
+  height: 100%;
+  width: 50%;
+  float: right;
+  padding-top: 10px;
+}
+
+.bar .button .icon.ion-record:before {
+  font-size: 14px;
+  margin-top: -5px;
+  margin-left: -12px;
+}
+
+ion-side-menu .item-icon-left .icon.ion-record:before {
+  font-size: 12px;
+  margin-bottom: 20px;
+  margin-left: 10px;
+  z-index: 1;
+}
+

@@ -1,0 +1,90 @@
+<ion-view view-title="{{'TEST.TITLE' | translate}}">
+  <ion-content class="gray-bg" scroll="true">
+    <span class="list-alert text-center" translate="TEST.CONTENT.TEST"></span>
+    <div class="list-title">Test App Version</div>
+    <ion-list>
+      <ion-item>
+        <span translate="TEST.CONTENT.ORIGIN_VER"></span>
+        <span class="item-note positive">{{data.appVerOri}}</span>
+      </ion-item>
+      <ion-item>
+        <span translate="TEST.CONTENT.TEMP_VER"></span>
+        <span class="item-note assertive">{{protocolBundle.protocolConstant.APP.VER}}</span>
+      </ion-item>
+      <ion-item class="item-input">
+        <span class="input-label" translate="TEST.CONTENT.INPUT"></span>
+        <input ng-model='data.appVerTest'></input>
+      </ion-item>
+    </ion-list>
+    <div class="button-bar">
+      <a class="button assertive" translate="TEST.CONTENT.CHANGE_VERSION" ng-click="action.changeVersion()"></a>
+      <a class="button positive" translate="TEST.CONTENT.RECOVER_VERSION" ng-click="action.recoverVersion()"></a>
+    </div>
+    <div class="list-title">Test App Router</div>
+    <ion-list>
+      <ion-item ng-click="serviceBundle.linkService.gotoMod('test-detail', {say: 'hello test-detail'})">
+        <span class="primary" translate="TEST.CONTENT.GO_TEST_DETAIL"></span>
+      </ion-item>
+      <ion-item ng-click="serviceBundle.linkService.gotoHome()">
+        <span class="primary" translate="TEST.CONTENT.GO_HOME"></span>
+      </ion-item>
+    </ion-list>
+    <div class="list-title">Test More Features</div>
+    <ion-list>
+      <ion-item ng-click="action.changeLanguage()">
+        <span class="primary" translate="TEST.CONTENT.CHANGE_LANGUAGE"></span>
+      </ion-item>
+      <ion-item ng-click="action.testLoading()">
+        <span class="primary" translate="TEST.CONTENT.TEST_LOADING"></span>
+      </ion-item>
+      <ion-item ng-click="openModal()">
+        <span class="primary" translate="TEST.CONTENT.GO_TEST_MODAL"></span>
+      </ion-item>
+      <ion-item ng-click="serviceBundle.linkService.gotoMod('test-template')">
+        <span class="primary" translate="TEST.CONTENT.GO_TEST_STYLE"></span>
+      </ion-item>
+      <div class="list-title">Test pick file by html</div>
+      <ion-list>
+        <ion-input>
+          <input type="file" accept="*/*" />
+        </ion-input>
+      </ion-list>
+    </ion-list>
+  </ion-content>
+</ion-view>
+
+<!-- inner html template. please define an unique id. -->
+<script id="mod-test-detail.html" type="text/ng-template">
+  <ion-view view-title="{{'TEST-DETAIL.TITLE' | translate}}">
+    <ion-content scroll="true">
+      <span class="info" translate="TEST-DETAIL.CONTENT.TEST"></span>
+      <br/>
+      <br/>
+      <span class="message">Parent tell me:</span>
+      <br/>
+      <input ng-model='data.input'></input>
+      <br/>
+      <span translate="TEST-DETAIL.CONTENT.INPUT"></span>
+      <span style="color:red">{{data.input}}</span>
+      <br/>
+      <button ng-click='action.submit()' translate="TEST-DETAIL.CONTENT.SUBMIT"></button>
+      <br/>
+      <br/>
+      <button class="button button-positive button-small" translate="TEST-DETAIL.CONTENT.GO_TEST" ng-click="serviceBundle.linkService.goBack()"></button>
+    </ion-content>
+  </ion-view>
+</script>
+
+<!-- inner html template. please define an unique id. -->
+<script id="mod-test-modal.html" type="text/ng-template">
+  <ion-modal-view>
+    <ion-header-bar class="bar bar-header bar-assertive">
+      <button class="button back-button" translate="COMMON.CONTENT.BACK" ng-click="closeModal()"></button>
+      <h1 class="title" translate="My Modal title"></h1>
+    </ion-header-bar>
+    <ion-content class="test-modal" scroll="true" scrollbar-y="false" has-bouncing="false">
+      <textarea class="test-modal-textarea" placeholder="Please input text."></textarea>
+    </ion-content>
+  </ion-modal-view>
+</script>
+

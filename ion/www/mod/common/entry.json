@@ -1,0 +1,8 @@
+{
+    "mod": "common",
+    "description": "Common is module to define common css, i18n...",
+    "ver": "0.0.1",
+    "entry": {
+        "location": "hide"
+    }
+}

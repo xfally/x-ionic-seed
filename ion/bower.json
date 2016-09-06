@@ -1,0 +1,26 @@
+{
+  "name": "starter",
+  "private": "true",
+  "devDependencies": {
+    "ionic": "driftyco/ionic-bower#1.2.4",
+    "angular-mocks": "~1.4.8"
+  },
+  "dependencies": {
+    "lazyload": "rgrove/lazyload",
+    "angular-loading-bar": "~0.9.0",
+    "angular-local-storage": "~0.5.0",
+    "angular-messages": "~1.5.8",
+    "angular-toastr": "~2.1.1",
+    "angular-translate": "~2.8.1",
+    "angular-translate-loader-partial": "~2.8.1",
+    "async": "~2.0.1",
+    "cryptojslib": "~3.1.2",
+    "oclazyload": "~1.0.9"
+  },
+  "resolutions": {
+    "angular": "1.4.3",
+    "angular-animate": "1.4.3",
+    "angular-sanitize": "1.4.3",
+    "angular-translate": "~2.8.1"
+  }
+}

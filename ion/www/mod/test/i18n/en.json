@@ -1,0 +1,38 @@
+{
+    "TEST": {
+        "TITLE": "Test",
+        "DESCRIPTION": "I'am the test mod",
+        "CONTENT": {
+            "TEST": "This is test page!",
+            "INPUT": "New App version",
+            "CHANGE_LANGUAGE": "Test Switch language",
+            "TEST_LOADING": "Test Loading",
+            "TEST_LOADING_MESSAGE": "This loading box will be replaced with another loading box after 10s. You can close the box by hand if it shows 'closeIcon'. It will not affect following loading box shown if 'closeIcon' clicked. When `loading.hide` function triggered, the box will not (maybe) hide immediately, but after some short time (refert to jsdoc or codes).",
+            "ORIGIN_VER": "Origin App version is",
+            "TEMP_VER": "Temp App version is",
+            "CHANGE_VERSION": "Change",
+            "RECOVER_VERSION": "Recover",
+            "GO_TEST_DETAIL": "Test Detail page (inner-template)",
+            "GO_TEST_MODAL": "Test modal (inner-template / modal)",
+            "GO_TEST_STYLE": "Test ionic style (outter-template)",
+            "GO_HOME": "Go back to Home"
+        }
+    },
+    "TEST-DETAIL": {
+        "TITLE": "Test Detail",
+        "DESCRIPTION": "I'am the detail mod/page of test mod",
+        "CONTENT": {
+            "TEST": "Aha, you have been routed to test detail page!",
+            "INPUT": "Input is:",
+            "SUBMIT": "Submit",
+            "GO_TEST": "Go back to Test main page"
+        }
+    },
+    "TEST-STYLE": {
+        "TITLE": "Test ionic css style",
+        "DESCRIPTION": "The page is used to test ionic css style",
+        "CONTENT": {
+            "TEST": "Some ionic css styles are shown below."
+        }
+    }
+}

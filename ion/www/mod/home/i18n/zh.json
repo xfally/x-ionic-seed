@@ -1,0 +1,23 @@
+{
+    "HOME": {
+        "TITLE": "主页",
+        "DESCRIPTION": "Hi~ 我是App的主页",
+        "CONTENT": {
+            "APP_NAME": "开拓者",
+            "HELLO": "朋友，你好！",
+            "MENU": "菜单",
+            "LOGIN": "登录",
+            "LOGOUT": "登出",
+            "LOGOUT_OK": "登出成功",
+            "UPDATE": {
+                "TITLE": "更新",
+                "DESCRIPTION": "检查软件更新",
+                "CONTENT": {
+                    "UPDATE_NOW": "现在升级",
+                    "UPDATE_LATER": "暂不升级",
+                    "APP_HAS_NEW_VER": "检测到App新版本，是否升级？"
+                }
+            }
+        }
+    }
+}

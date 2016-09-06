@@ -1,0 +1,15 @@
+{
+    "INTRODUCE": {
+        "TITLE": "Introduce pages",
+        "DESCRIPTION": "Introduce pages will show up when user open the App firstly",
+        "CONTENT": {
+            "P1_LABEL_1": "One",
+            "P1_LABEL_2": "One One One One One One One One One One.",
+            "P2_LABEL_1": "Two",
+            "P2_LABEL_2": "Two Two Two Two Two Two Two Two Two Two.",
+            "P3_LABEL_1": "Three",
+            "P3_LABEL_2": "Three Three Three Three Three Three Three Three Three Three.",
+            "P3_BUTTON": "Get Started"
+        }
+    }
+}

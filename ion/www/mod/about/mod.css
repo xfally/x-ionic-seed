@@ -1,0 +1,25 @@
+.logo {
+  position: relative;
+  width: 100px;
+  height: auto;
+  margin: 0 auto;
+  padding: 40px 0;
+}
+
+.logo img {
+  height: auto;
+  max-width: 100%;
+  display: block;
+}
+
+.copyright {
+  position: absolute;
+  bottom: 0;
+  text-align: center;
+  width: 100%;
+  padding: 5px;
+}
+
+.copyright button {
+  margin: -10px 0 !important;
+}

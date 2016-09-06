@@ -1,0 +1,27 @@
+.introduce-background {
+  width: 100%;
+  height: 100%;
+  display: block;
+  position: absolute;
+  z-index: -1;
+}
+
+.introduce-foreground {
+  width: 100%;
+  height: 60%;
+  text-align: center;
+}
+
+.introduce-foreground-image {
+  height: 100%;
+}
+
+.introduce-footer-button {
+  width: 54%;
+  border-radius: 29px;
+  font-size: 19px;
+  margin-top: 25px;
+  min-height: 40px;
+  color: #FFF !important;
+  border-color: #FFF !important;
+}

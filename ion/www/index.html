@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src *; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+  <title></title>
+
+  <!-- base lib (css, js) -->
+  <script src="lib/lazyload/lazyload.js"></script>
+  <script src="js/xpath.js"></script>
+  <script src="js/xloader.js"></script>
+
+  <!-- cordova script (this will be a 404 during development) -->
+  <script src="cordova.js"></script>
+</head>
+
+<body ng-app="starter">
+
+  <!-- index route/navigate -->
+  <ion-nav-bar class="bar-positive">
+    <!-- ion-nav-back-button has its default style and text for different platform, you can custom it if don't like -->
+    <ion-nav-back-button ng-click="serviceBundle.linkService.goBack()">
+    </ion-nav-back-button>
+  </ion-nav-bar>
+
+  <!-- where the initial view template will be rendered -->
+  <ion-nav-view>
+  </ion-nav-view>
+
+</body>
+
+</html>
+

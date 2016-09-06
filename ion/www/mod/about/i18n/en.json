@@ -1,0 +1,17 @@
+{
+    "ABOUT": {
+        "TITLE": "About",
+        "DESCRIPTION": "About this App, including version and update...",
+        "CONTENT": {
+            "CHECK_UPDATE": "Check for updates",
+            "CHECKING": "Checking for updates...",
+            "NO_INTERNET": "Internet unavailable.",
+            "HAS_NEW_VERSION": "New version available",
+            "NO_NEW_VERSION": "Your App is up to date.",
+            "NOTIFICATION": "Notifications",
+            "INTRODUCTION": "Introduction",
+            "PERMISSION_DENIED": "Permission denied, please enable notification in system setting.",
+            "COPYRIGHT": "Copyright © 2016 xfally. All rights reserved."
+        }
+    }
+}

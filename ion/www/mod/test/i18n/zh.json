@@ -1,0 +1,38 @@
+{
+    "TEST": {
+        "TITLE": "测试页面",
+        "DESCRIPTION": "我是一个测试页面/模块",
+        "CONTENT": {
+            "TEST": "这是测试主页！",
+            "INPUT": "新的App版本号",
+            "CHANGE_LANGUAGE": "测试语言切换",
+            "TEST_LOADING": "测试Loading控件",
+            "TEST_LOADING_MESSAGE": "10s后被下一个loading替换。如果loading显示closeIcon，你也可以点击关闭此loading，但这并不会影响后续的loading继续弹出。另外，当代码主动执行loading.hide时，并非立即执行，而是设定了短暂的延时，具体时间请查看jsdoc或源码。",
+            "ORIGIN_VER": "原始App版本是",
+            "TEMP_VER": "临时App版本是",
+            "CHANGE_VERSION": "修改",
+            "RECOVER_VERSION": "恢复",
+            "GO_TEST_DETAIL": "测试详情页面（内部模板）",
+            "GO_TEST_MODAL": "测试modal弹出方式",
+            "GO_TEST_STYLE": "测试ionic控件样式页面（外部模板）",
+            "GO_HOME": "返回主页"
+        }
+    },
+    "TEST-DETAIL": {
+        "TITLE": "测试详情页面",
+        "DESCRIPTION": "我是测试详情页面，测试页面的子页面。",
+        "CONTENT": {
+            "TEST": "伟大的“路由”将你带到了测试详情页面！以后就这么写嵌套子页面了。下面的控件和主测试页面一样（变量名也一样），但你看两者相互影响吗？",
+            "INPUT": "你输入的是:",
+            "SUBMIT": "提交",
+            "GO_TEST": "回到测试主页面"
+        }
+    },
+    "TEST-STYLE": {
+        "TITLE": "测试ionic控件样式",
+        "DESCRIPTION": "本页用于测试ionic控件样式",
+        "CONTENT": {
+            "TEST": "下面展示ionic提供的部分控件样式。"
+        }
+    }
+}

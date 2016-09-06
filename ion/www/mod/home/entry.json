@@ -1,0 +1,12 @@
+{
+    "mod": "home",
+    "description": "I'm the home page of App.",
+    "ver": "0.0.1",
+    "entry": {
+        "supportLocation": [
+            "sideMenu",
+            "gridMenu",
+            "hide"
+        ]
+    }
+}
