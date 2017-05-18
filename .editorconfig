@@ -21,11 +21,12 @@ max_line_length = off
 insert_final_newline = false
 trim_trailing_whitespace = false
 
-[package.json,bower.json,*config.json]
+[*.json]
+;path=~/.vim/bundle/vim-jsbeautify/plugin/lib/js/bin/js-beautify.js
 indent_style = space
 indent_size = 2
 
-[*.{js,json}]
+[*.js]
 ;path=~/.vim/bundle/vim-jsbeautify/plugin/lib/js/bin/js-beautify.js
 indent_style = space
 indent_size = 4
