@@ -15,6 +15,7 @@
             "GO_TEST_DETAIL": "Test Detail page (inner-template)",
             "GO_TEST_MODAL": "Test modal (inner-template / modal)",
             "GO_TEST_STYLE": "Test ionic style (outter-template)",
+            "GO_TEST_FTP": "Test Ftp plugin",
             "GO_HOME": "Go back to Home"
         }
     },
@@ -26,6 +27,22 @@
             "INPUT": "Input is:",
             "SUBMIT": "Submit",
             "GO_TEST": "Go back to Test main page"
+        }
+    },
+    "TEST-FTP": {
+        "TITLE": "Test Ftp plugin",
+        "DESCRIPTION": "Test Cordova Ftp plugin",
+        "CONTENT": {
+        "PROMPT": "This test needs real device or emulator env (As Native layer is necessary, so pure web env is not supported). You can see more log in console. Please make sure the local file exists and accessible. Test on Android is recommended if you don't know iOS filesystem or sandbox design.",
+            "FTP_ADDRESS": "Ftp address",
+            "FTP_USERNAME": "Ftp username",
+            "FTP_PASSWORD": "Ftp password",
+            "FTP_HOME_PATH": "Ftp home path",
+            "REMOTE_PATH": "Remote path",
+            "REMOTE_FILE": "Remote file",
+            "LOCAL_PATH": "Local path",
+            "LOCAL_FILE": "Local file",
+            "START": "Start Test"
         }
     },
     "TEST-STYLE": {

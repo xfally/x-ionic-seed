@@ -15,6 +15,7 @@
             "GO_TEST_DETAIL": "测试详情页面（内部模板）",
             "GO_TEST_MODAL": "测试modal弹出方式",
             "GO_TEST_STYLE": "测试ionic控件样式页面（外部模板）",
+            "GO_TEST_FTP": "测试Ftp插件",
             "GO_HOME": "返回主页"
         }
     },
@@ -26,6 +27,22 @@
             "INPUT": "你输入的是:",
             "SUBMIT": "提交",
             "GO_TEST": "回到测试主页面"
+        }
+    },
+    "TEST-FTP": {
+        "TITLE": "测试Ftp插件",
+        "DESCRIPTION": "用于测试Cordova Ftp插件",
+        "CONTENT": {
+            "PROMPT": "本测试需要真机或模拟器环境（因为依赖Native层，故不支持纯web环境）。在console中可以查看更多log。请确保本地文件存在并有访问权限。如果你不清楚iOS的文件系统或沙盒设计，就不知如何填写本地路径，此时建议在Android上做测试即可。",
+            "FTP_ADDRESS": "Ftp地址",
+            "FTP_USERNAME": "Ftp用户名",
+            "FTP_PASSWORD": "Ftp密码",
+            "FTP_HOME_PATH": "Ftp主目录",
+            "REMOTE_PATH": "远程目录",
+            "REMOTE_FILE": "远程文件",
+            "LOCAL_PATH": "本地目录",
+            "LOCAL_FILE": "本地文件",
+            "START": "开始测试"
         }
     },
     "TEST-STYLE": {

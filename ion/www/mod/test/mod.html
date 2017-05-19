@@ -43,6 +43,9 @@
       <ion-item ng-click="serviceBundle.linkService.gotoMod('test-template')">
         <span class="primary" translate="TEST.CONTENT.GO_TEST_STYLE"></span>
       </ion-item>
+      <ion-item ng-click="serviceBundle.linkService.gotoMod('test-ftp')">
+        <span class="primary" translate="TEST.CONTENT.GO_TEST_FTP"></span>
+      </ion-item>
       <div class="list-title">Test pick file by html</div>
       <ion-list>
         <ion-input>
@@ -71,6 +74,45 @@
       <br/>
       <br/>
       <button class="button button-positive button-small" translate="TEST-DETAIL.CONTENT.GO_TEST" ng-click="serviceBundle.linkService.goBack()"></button>
+    </ion-content>
+  </ion-view>
+</script>
+
+<!-- inner html template. please define an unique id. -->
+<script id="mod-test-ftp.html" type="text/ng-template">
+  <ion-view view-title="{{'TEST-FTP.TITLE' | translate}}">
+    <ion-content class="gray-bg padding-top" scroll="true">
+      <ion-list>
+        <ion-item class="item-input">
+          <span class="input-label" translate="TEST-FTP.CONTENT.FTP_ADDRESS"></span>
+          <input ng-model='data.ftp.ADDRESS'></input>
+        </ion-item>
+        <ion-item class="item-input">
+          <span class="input-label" translate="TEST-FTP.CONTENT.FTP_USERNAME"></span>
+          <input ng-model='data.ftp.USERNAME'></input>
+        </ion-item>
+        <ion-item class="item-input">
+          <span class="input-label" translate="TEST-FTP.CONTENT.FTP_PASSWORD"></span>
+          <input ng-model='data.ftp.PASSWORD'></input>
+        </ion-item>
+        <ion-item class="item-input">
+          <span class="input-label" translate="TEST-FTP.CONTENT.FTP_HOME_PATH"></span>
+          <input ng-model='data.ftp.HOME_PATH'></input>
+        </ion-item>
+        <ion-item class="item-input">
+          <span class="input-label" translate="TEST-FTP.CONTENT.REMOTE_PATH"></span>
+          <input ng-model='data.remote.PATH'></input>
+        </ion-item>
+        <ion-item class="item-input">
+          <span class="input-label" translate="TEST-FTP.CONTENT.LOCAL_FILE"></span>
+          <input ng-model='data.local.FILE'></input>
+        </ion-item>
+      </ion-list>
+      <span class="list-info" translate="TEST-FTP.CONTENT.PROMPT"></span>
+      <div class="pl10 pr10">
+        <button class="button button-full button-positive" ng-click="action.testFtp()"
+        translate="TEST-FTP.CONTENT.START"></button>
+      </div>
     </ion-content>
   </ion-view>
 </script>

@@ -38,6 +38,11 @@
                     templateUrl: 'mod/test/template/test.html',
                     controller: 'testTemplateCtrl'
                 })
+                .state('test-ftp', {
+                    url: '/test-ftp',
+                    templateUrl: 'mod-test-ftp.html',
+                    controller: 'testFtpCtrl'
+                })
         }
     ])
 
@@ -201,6 +206,274 @@
                 enter: testUtil.enterCallback,
                 beforeLeave: testUtil.beforeLeaveCallback
             }, true);
+        }
+    ])
+
+    .controller('testFtpCtrl', ['serviceBundle', 'utilBundle', 'protocolBundle', '$scope', 'testUtil', '$ionicPlatform', '$window', '$q',
+        function(serviceBundle, utilBundle, protocolBundle, $scope, testUtil, $ionicPlatform, $window, $q) {
+            serviceBundle.modService.initMod($scope, {
+                enter: testUtil.enterCallback,
+                beforeLeave: testUtil.beforeLeaveCallback
+            }, true);
+
+            var loglog = '';
+            var ftpPromiseUtil = {
+                // Check plugin exist
+                available: function() {
+                    var deferred = $q.defer();
+                    if ($window.cordova && $window.cordova.plugin && $window.cordova.plugin.ftp) {
+                        serviceBundle.logService.info("xtest: ftp: plugin ready");
+                        serviceBundle.promptService.loading.show(loglog += '\n' + 'plugin ready.', undefined, true);
+                        deferred.resolve(true);
+                    } else {
+                        serviceBundle.logService.error("xtest: ftp: plugin not found!");
+                        serviceBundle.promptService.loading.show(loglog += '\n' + 'plugin not found!', undefined, true);
+                        deferred.reject(false);
+                    }
+                    return deferred.promise;
+                },
+                // Connect to one ftp server, then you can do any actions/cmds
+                connect: function(address, username, password) {
+                    serviceBundle.promptService.loading.show(loglog += '\n' + 'test connect...', undefined, true);
+                    var deferred = $q.defer();
+                    $window.cordova.plugin.ftp.connect(address, username, password, function(ok) {
+                        serviceBundle.logService.info("xtest: ftp: connect ok");
+                        serviceBundle.promptService.loading.show(loglog += '\n' + 'connect ok.', undefined, true);
+                        deferred.resolve(ok);
+                    }, function(error) {
+                        serviceBundle.logService.error("xtest: ftp: connect error=" + error);
+                        serviceBundle.promptService.loading.show(loglog += '\n' + 'connect error=' + error, undefined, true);
+                        deferred.reject(error);
+                    })
+                    return deferred.promise;
+                },
+                // List one dir, note that it can just be dir, not file
+                ls: function(remotePath) {
+                    serviceBundle.promptService.loading.show(loglog += '\n' + 'test list...', undefined, true);
+                    var deferred = $q.defer();
+                    $window.cordova.plugin.ftp.ls(remotePath, function(fileList) {
+                        serviceBundle.logService.info("xtest: ftp: list ok");
+                        serviceBundle.promptService.loading.show(loglog += '\n' + 'list ok.', undefined, true);
+                        if (fileList && fileList.length > 0) {
+                            serviceBundle.logService.debug("xtest: ftp: the last file'name is " + fileList[fileList.length - 1].name);
+                            serviceBundle.logService.debug("xtest: ftp: the last file'type is " + fileList[fileList.length - 1].type);
+                            serviceBundle.logService.debug("xtest: ftp: the last file'link is " + fileList[fileList.length - 1].link);
+                            serviceBundle.logService.debug("xtest: ftp: the last file'size is " + fileList[fileList.length - 1].size);
+                            serviceBundle.logService.debug("xtest: ftp: the last file'modifiedDate is " + fileList[fileList.length - 1].modifiedDate);
+                        }
+                        deferred.resolve(fileList);
+                    }, function(error) {
+                        serviceBundle.logService.error("xtest: ftp: list error=" + error);
+                        serviceBundle.promptService.loading.show(loglog += '\n' + 'list error=' + error, undefined, true);
+                        deferred.reject(error);
+                    })
+                    return deferred.promise;
+                },
+                // Create one dir on ftp server, fail if a same named dir exists
+                mkdir: function(remotePath) {
+                    serviceBundle.promptService.loading.show(loglog += '\n' + 'test mkdir...', undefined, true);
+                    var deferred = $q.defer();
+                    $window.cordova.plugin.ftp.mkdir(remotePath, function(ok) {
+                        serviceBundle.logService.info("xtest: ftp: mkdir ok=" + ok);
+                        serviceBundle.promptService.loading.show(loglog += '\n' + 'mkdir ok.', undefined, true);
+                        deferred.resolve(ok);
+                    }, function(error) {
+                        serviceBundle.logService.error("xtest: ftp: mkdir error=" + error);
+                        serviceBundle.promptService.loading.show(loglog += '\n' + 'mkdir error=' + error, undefined, true);
+                        deferred.reject(error);
+                    })
+                    return deferred.promise;
+                },
+                // Upload localFile to remote (you can rename at the same time). arg1: localFile, arg2: remoteFile
+                upload: function(localFile, remoteFile) {
+                    serviceBundle.promptService.loading.show({
+                        message: loglog += '\n' + 'test upload...',
+                        showCloseIcon: true,
+                        callback: function() {
+                            ftpPromiseUtil.cancel().then(function(ok) {
+                                serviceBundle.promptService.loadingBar.complete();
+                            }, function(error) {
+                                serviceBundle.promptService.loadingBar.complete();
+                            });
+                        }
+                    });
+                    serviceBundle.promptService.loadingBar.start();
+                    var deferred = $q.defer();
+                    $window.cordova.plugin.ftp.upload(localFile, remoteFile, function(percent) {
+                        if (percent == 1) {
+                            serviceBundle.logService.info("xtest: ftp: upload finish");
+                            serviceBundle.promptService.loading.show(loglog += '\n' + 'upload finish.', undefined, true);
+                            serviceBundle.promptService.loadingBar.complete();
+                            deferred.resolve(percent);
+                        } else {
+                            serviceBundle.logService.debug("xtest: ftp: upload percent=" + percent * 100 + "%");
+                            serviceBundle.promptService.loadingBar.set(percent);
+                            deferred.notify(percent);
+                        }
+                    }, function(error) {
+                        serviceBundle.logService.error("xtest: ftp: upload error=" + error);
+                        serviceBundle.promptService.loading.show(loglog += '\n' + 'upload error=' + error, undefined, true);
+                        serviceBundle.promptService.loadingBar.complete();
+                        deferred.reject(error);
+                    })
+                    return deferred.promise;
+                },
+                // Download remoteFile to local (you can rename at the same time). arg1: localFile, arg2: remoteFile
+                download: function(localFile, remoteFile) {
+                    serviceBundle.promptService.loading.show({
+                        message: loglog += '\n' + 'test download...',
+                        showCloseIcon: true,
+                        callback: function() {
+                            $window.cordova.plugin.ftp.cancel(function(ok) {
+                                serviceBundle.promptService.loadingBar.complete();
+                            }, function(error) {
+                                serviceBundle.promptService.loadingBar.complete();
+                            });
+                        }
+                    });
+                    serviceBundle.promptService.loadingBar.start();
+                    var deferred = $q.defer();
+                    $window.cordova.plugin.ftp.download(localFile, remoteFile, function(percent) {
+                        if (percent == 1) {
+                            serviceBundle.logService.info("xtest: ftp: download finish");
+                            serviceBundle.promptService.loading.show(loglog += '\n' + 'download finish.', undefined, true);
+                            serviceBundle.promptService.loadingBar.complete();
+                            deferred.resolve(percent);
+                        } else {
+                            serviceBundle.logService.debug("xtest: ftp: download percent=" + percent * 100 + "%");
+                            serviceBundle.promptService.loadingBar.set(percent);
+                            deferred.notify(percent);
+                        }
+                    }, function(error) {
+                        serviceBundle.logService.error("xtest: ftp: download error=" + error);
+                        serviceBundle.promptService.loading.show(loglog += '\n' + 'download error=' + error, undefined, true);
+                        serviceBundle.promptService.loadingBar.complete();
+                        deferred.reject(error);
+                    })
+                    return deferred.promise;
+                },
+                // Delete one file on ftp server
+                rm: function(remoteFile) {
+                    serviceBundle.promptService.loading.show(loglog += '\n' + 'test rm...', undefined, true);
+                    var deferred = $q.defer();
+                    $window.cordova.plugin.ftp.rm(remoteFile, function(ok) {
+                        serviceBundle.logService.info("xtest: ftp: rm ok=" + ok);
+                        serviceBundle.promptService.loading.show(loglog += '\n' + 'rm ok.', undefined, true);
+                        deferred.resolve(ok);
+                    }, function(error) {
+                        serviceBundle.logService.error("xtest: ftp: rm error=" + error);
+                        serviceBundle.promptService.loading.show(loglog += '\n' + 'rm error=' + error, undefined, true);
+                        deferred.reject(error);
+                    })
+                    return deferred.promise;
+                },
+                // Delete one dir on ftp server, fail if it's not an empty dir
+                rmdir: function(remotePath) {
+                    serviceBundle.promptService.loading.show(loglog += '\n' + 'test rmdir...', undefined, true);
+                    var deferred = $q.defer();
+                    $window.cordova.plugin.ftp.rmdir(remotePath, function(ok) {
+                        serviceBundle.logService.info("xtest: ftp: rmdir ok=" + ok);
+                        serviceBundle.promptService.loading.show(loglog += '\n' + 'rmdir ok.', undefined, true);
+                        deferred.resolve(ok);
+                    }, function(error) {
+                        serviceBundle.logService.error("xtest: ftp: rmdir error=" + error);
+                        serviceBundle.promptService.loading.show(loglog += '\n' + 'rmdir error=' + error, undefined, true);
+                        deferred.reject(error);
+                    })
+                    return deferred.promise;
+                },
+                // Cancel action
+                cancel: function(path) {
+                    serviceBundle.promptService.loading.show(loglog += '\n' + 'test cancel...', undefined, true);
+                    var deferred = $q.defer();
+                    $window.cordova.plugin.ftp.cancel(function(ok) {
+                        serviceBundle.logService.info("xtest: ftp: cancel ok=" + ok);
+                        serviceBundle.promptService.loading.show(loglog += '\n' + 'cancel ok.', undefined, true);
+                        deferred.resolve(ok);
+                    }, function(error) {
+                        serviceBundle.logService.error("xtest: ftp: cancel error=" + error);
+                        serviceBundle.promptService.loading.show(loglog += '\n' + 'cancel error=' + error, undefined, true);
+                        deferred.reject(error);
+                    })
+                    return deferred.promise;
+                },
+                // Disconnect from ftp server explicitly
+                disconnect: function() {
+                    serviceBundle.promptService.loading.show(loglog += '\n' + 'test disconnect...', undefined, true);
+                    var deferred = $q.defer();
+                    $window.cordova.plugin.ftp.disconnect(function(ok) {
+                        serviceBundle.logService.info("xtest: ftp: disconnect ok=" + ok);
+                        serviceBundle.promptService.loading.show(loglog += '\n' + 'disconnect ok.', undefined, true);
+                        deferred.resolve(ok);
+                    }, function(error) {
+                        serviceBundle.logService.error("xtest: ftp: disconnect error=" + error);
+                        serviceBundle.promptService.loading.show(loglog += '\n' + 'disconnect error=' + error, undefined, true);
+                        deferred.reject(error);
+                    })
+                    return deferred.promise;
+                }
+            };
+
+            $scope.data = {
+                ftp: {
+                    ADDRESS: '192.168.1.109',
+                    USERNAME: 'anonymous',
+                    PASSWORD: 'anonymous@',
+                    HOME_PATH: '/pub/'
+                },
+                remote: {
+                    PATH: '/pub/testFtpDir/'
+                },
+                local: {
+                    FILE: '/sdcard/xxx/sample.mp4'
+                }
+            };
+
+            $scope.action = {
+                testFtp: function() {
+                    var FTP = {
+                        ADDRESS: $scope.data.ftp.ADDRESS,
+                        USERNAME: $scope.data.ftp.USERNAME,
+                        PASSWORD: $scope.data.ftp.PASSWORD,
+                        HOME_PATH: $scope.data.ftp.HOME_PATH
+                    };
+                    var localFile = $scope.data.local.FILE;
+                    var localFileCopy = localFile + '.copy';
+                    var remotePath = $scope.data.remote.PATH;
+                    if (remotePath.substr(-1) != '/') {
+                        remotePath += '/';
+                    }
+                    var remoteFile = remotePath + localFile.substr(localFile.lastIndexOf('/') + 1);
+                    serviceBundle.logService.debug("xtest: remotePath is " + remotePath);
+                    serviceBundle.logService.debug("xtest: remoteFile is " + remoteFile);
+                    serviceBundle.logService.debug("xtest: localFile is " + localFile);
+                    serviceBundle.logService.debug("xtest: localFileCopy is " + localFileCopy);
+
+                    loglog = '';
+                    serviceBundle.promptService.loading.show(loglog += 'Test Ftp plugin: start...', undefined, true);
+                    $ionicPlatform.ready(function() {
+                        ftpPromiseUtil.available().then(function() {
+                            ftpPromiseUtil.connect(FTP.ADDRESS, FTP.USERNAME, FTP.PASSWORD).then(function(ok) {
+                                ftpPromiseUtil.ls(FTP.HOME_PATH).then(function(fileList) {
+                                    ftpPromiseUtil.mkdir(remotePath).then(function(ok) {
+                                        ftpPromiseUtil.upload(localFile, remoteFile).then(function(percent) {
+                                            ftpPromiseUtil.download(localFileCopy, remoteFile).then(function(percent) {
+                                                ftpPromiseUtil.rm(remoteFile).then(function(ok) {
+                                                    ftpPromiseUtil.rmdir(remotePath).then(function(ok) {
+                                                        ftpPromiseUtil.disconnect().then(function(ok) {
+                                                            serviceBundle.promptService.loading.show(loglog += '\n' + 'All test pass!', undefined, true);
+                                                        });
+                                                    });
+                                                });
+                                            });
+                                        });
+                                    });
+                                });
+                            });
+                        });
+                    });
+                }
+            }
         }
     ])
 
