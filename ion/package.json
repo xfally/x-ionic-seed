@@ -7,7 +7,7 @@
         "cordova-ios": "^4.4.0",
         "cordova-plugin-console": "^1.0.7",
         "cordova-plugin-device": "^1.1.6",
-        "cordova-plugin-ftp": "^1.1.0",
+        "cordova-plugin-ftp": "^1.1.1",
         "cordova-plugin-inappbrowser": "^1.4.0",
         "cordova-plugin-splashscreen": "^3.2.2",
         "cordova-plugin-statusbar": "^2.1.3",
