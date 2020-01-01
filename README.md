@@ -29,7 +29,7 @@ The project collects many great AngularJS libs, Cordova plugins, and has been cu
 Any ionic or cordova project should prepare these tools below:
 
 - Download and install [Node.js](http://nodejs.org/)
-- JDK7 (OpenJDK or SunJDK), Android SDK (Android Studio) or iOS SDK (Xcode)
+- JDK7+ (OpenJDK or SunJDK), Android SDK (Android Studio) or iOS SDK (Xcode)
   Refer to [Cordova platforms](http://cordova.apache.org/docs/en/4.0.0/guide/platforms/index.html)
 - `npm install -g bower gulp grunt-cli cordova ionic`
 - `npm install -g ios-deploy ios-sim --unsafe-perm` (Just iOS needed)
@@ -37,7 +37,9 @@ Any ionic or cordova project should prepare these tools below:
 ### Install now
 
 - `git clone https://github.com/xfally/x-ionic-seed`
+- `cd ion`
 - `npm install` (debug tools, ignored by git)
+- `gulp install` (runtime libs)
 
 ## Usage
 
